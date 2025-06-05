@@ -1,9 +1,6 @@
-package io.github.juliacanalle.creditointernoapi.model;
+package io.github.juliacanalle.creditointernoapi.domain.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Embeddable
 public class Endereco {
