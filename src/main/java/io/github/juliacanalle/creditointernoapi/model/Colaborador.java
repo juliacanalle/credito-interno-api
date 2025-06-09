@@ -45,4 +45,7 @@ public class Colaborador {
         this.endereco = new Endereco(endereco);
     }
 
+    public void inativarColaborador() {
+        this.ativo = false;
+    }
 }

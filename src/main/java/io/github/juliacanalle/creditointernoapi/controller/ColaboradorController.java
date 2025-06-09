@@ -8,9 +8,11 @@ import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.service.ColaboradorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,9 +24,10 @@ public class ColaboradorController {
     private ColaboradorRepository colaboradorRepository;
     @Autowired
     private EmpresaRepository empresaRepository;
-
     @Autowired
-   private ColaboradorService colaboradorService;
+    private ColaboradorService colaboradorService;
+
+    private Colaborador colaborador;
 
     @Transactional
     @PostMapping
@@ -43,6 +46,16 @@ public class ColaboradorController {
     @GetMapping(("/{cpf}"))
     public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
         return colaboradorRepository.findByCpf(cpf);
+    }
+
+    @Transactional
+    @DeleteMapping(("/{cpf}"))
+    public void inativar(@PathVariable("cpf") String cpf) {
+        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        colaborador.inativarColaborador();
     }
 
 
