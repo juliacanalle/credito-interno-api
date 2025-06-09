@@ -40,6 +40,11 @@ public class ColaboradorController {
         return colaboradorRepository.findAllByAtivoTrue();
     }
 
+    @GetMapping(("/{cpf}"))
+    public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
+        return colaboradorRepository.findByCpf(cpf);
+    }
+
 
 
 
