@@ -1,4 +1,4 @@
-package io.github.juliacanalle.creditointernoapi.model;
+package io.github.juliacanalle.creditointernoapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -16,7 +16,7 @@ public record DadosEndereco(
         String cep,
 
         @NotBlank
-        String cidade,
+        String localidade,
 
         @NotBlank
         String uf,

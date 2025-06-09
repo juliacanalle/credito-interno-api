@@ -1,4 +1,77 @@
 package io.github.juliacanalle.creditointernoapi.service;
 
+import io.github.juliacanalle.creditointernoapi.dto.CepDto;
+import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
+import io.github.juliacanalle.creditointernoapi.dto.EmpresaRequest;
+import io.github.juliacanalle.creditointernoapi.model.Colaborador;
+import io.github.juliacanalle.creditointernoapi.model.Conta;
+import io.github.juliacanalle.creditointernoapi.model.Empresa;
+import io.github.juliacanalle.creditointernoapi.model.Endereco;
+import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
+import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
+@Service
 public class ColaboradorService {
+
+    private final CepService cepService;
+    private final EmpresaRepository empresaRepository;
+    private final ColaboradorRepository colaboradorRepository;
+
+    public ColaboradorService(
+            CepService cepService,
+            EmpresaRepository empresaRepository,
+            ColaboradorRepository colaboradorRepository
+    ) {
+        this.cepService = cepService;
+        this.empresaRepository = empresaRepository;
+        this.colaboradorRepository = colaboradorRepository;
+    }
+
+    @Transactional
+    public Colaborador cadastrarColaboradorComBuscaCep (@Valid ColaboradorRequest request, String cnpj) {
+        CepDto cepDto = cepService.consultaCep(request.cep());
+
+        //Criação do endereço
+        Endereco endereco = new Endereco();
+        endereco.setCep(request.cep());
+        endereco.setLogradouro(cepDto.logradouro());
+        endereco.setBairro(cepDto.bairro());
+        endereco.setLocalidade(cepDto.localidade());
+        endereco.setUf(cepDto.uf());
+        endereco.setNumero(request.numero());
+        endereco.setComplemento(request.complemento());
+
+        if (colaboradorRepository.existsByCpf(request.cpf())) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "CPF " + request.cpf() + " já cadastrado"
+            );
+        }
+
+        //Criação do colaborador
+        Colaborador colaborador = new Colaborador();
+        colaborador.setNome(request.nome());
+        colaborador.setCpf(request.cpf());
+        colaborador.setEndereco(endereco);
+
+        //Criação da conta e atribuição da mesma ao colaborador criado anteriormente
+        Conta  conta = new Conta();
+        colaborador.setConta(conta);
+
+        Empresa empresa = empresaRepository.findByCnpj(cnpj);
+        if (empresa == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        colaborador.setEmpresa(empresa);
+
+        return colaboradorRepository.save(colaborador);
+    }
 }

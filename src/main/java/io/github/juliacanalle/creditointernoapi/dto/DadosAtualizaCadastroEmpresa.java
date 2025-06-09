@@ -1,4 +1,9 @@
 package io.github.juliacanalle.creditointernoapi.dto;
 
-public class DadosAtualizaCadastroEmpresa {
+import jakarta.validation.constraints.NotNull;
+
+public record DadosAtualizaCadastroEmpresa(
+
+        String nomeNovo,
+        String cnpjNovo) {
 }

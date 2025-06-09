@@ -1,18 +1,38 @@
-package io.github.juliacanalle.creditointernoapi.domain.model;
-
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+package io.github.juliacanalle.creditointernoapi.model;
+import jakarta.persistence.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
+@Table(name = "empresas")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Empresa {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    String nome;
-    String cnpj;
+    private long id;
+
+    @NotBlank
+    @Column(nullable = false)
+    private String nome;
+
+    @NotBlank
+    @Pattern(regexp = "\\d{14}")
+    @Column(nullable = false, unique = true, length = 14)
+    private String cnpj;
+
+    @NotNull
+    @Column(nullable = false)
+    private boolean ativo;
+
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
+    @JoinColumn(name = "endereco_id", nullable = false)
     Endereco endereco;
 
     public Empresa(String nome, String cnpj, Endereco endereco) {
@@ -21,7 +41,8 @@ public class Empresa {
         this.endereco = endereco;
     }
 
-    public Empresa() {
-
+    public void excluir() {
+        this.ativo = false;
     }
 }
+

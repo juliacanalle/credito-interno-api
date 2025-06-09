@@ -1,20 +1,21 @@
 package io.github.juliacanalle.creditointernoapi.model;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "enderecos")
-@Embeddable
+@Table(name = "contas")
+@Data
 public class Conta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
-    BigDecimal saldo;
+    private long id;
+    private BigDecimal saldo;
 
     public Conta(BigDecimal saldo) {
-        this.saldo = saldo;
+        this.saldo = BigDecimal.ZERO;
     }
 
     public Conta() {

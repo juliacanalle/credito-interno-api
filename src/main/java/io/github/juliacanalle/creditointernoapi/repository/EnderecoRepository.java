@@ -1,4 +1,7 @@
 package io.github.juliacanalle.creditointernoapi.repository;
 
-public interface EnderecoRepository {
+import io.github.juliacanalle.creditointernoapi.model.Endereco;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface EnderecoRepository extends JpaRepository<Endereco,Long> {
 }
