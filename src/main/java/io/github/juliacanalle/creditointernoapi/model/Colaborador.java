@@ -3,6 +3,7 @@ package io.github.juliacanalle.creditointernoapi.model;
 import io.github.juliacanalle.creditointernoapi.dto.DadosEndereco;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -33,6 +34,10 @@ public class Colaborador {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "conta_id", nullable = false)
     Conta conta;
+
+    @NotNull
+    @Column(nullable = false)
+    private boolean ativo = true;
 
     public Colaborador(String nome, String cpf, DadosEndereco endereco) {
         this.nome = nome;

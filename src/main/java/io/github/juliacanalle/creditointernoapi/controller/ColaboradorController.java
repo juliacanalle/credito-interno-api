@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/empresas/{cnpj}/colaboradores")
 public class ColaboradorController {
@@ -31,6 +33,11 @@ public class ColaboradorController {
         ColaboradorResponse response = new ColaboradorResponse(colaboradorSalvo);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public List<Colaborador> listarColaboradores(@PathVariable("cnpj") String cnpj) {
+        return colaboradorRepository.findAllByAtivoTrue();
     }
 
 
