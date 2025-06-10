@@ -58,7 +58,13 @@ public class ColaboradorController {
         colaborador.inativarColaborador();
     }
 
-
-
-
+    @Transactional
+    @PutMapping(("/{cpf}"))
+    public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
+        var colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        colaborador.atualizarNome(request.nome());
+    }
 }

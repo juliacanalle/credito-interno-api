@@ -48,4 +48,8 @@ public class Colaborador {
     public void inativarColaborador() {
         this.ativo = false;
     }
+
+    public void atualizarNome(String novoNome) {
+        this.nome = novoNome;
+    }
 }
