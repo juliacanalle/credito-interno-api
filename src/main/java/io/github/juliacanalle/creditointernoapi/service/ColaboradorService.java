@@ -24,16 +24,20 @@ public class ColaboradorService {
     private final CepService cepService;
     private final EmpresaRepository empresaRepository;
     private final ColaboradorRepository colaboradorRepository;
+    private final ContaService contaService;
     Colaborador colaborador;
+
 
     public ColaboradorService(
             CepService cepService,
             EmpresaRepository empresaRepository,
-            ColaboradorRepository colaboradorRepository
+            ColaboradorRepository colaboradorRepository,
+            ContaService contaService
     ) {
         this.cepService = cepService;
         this.empresaRepository = empresaRepository;
         this.colaboradorRepository = colaboradorRepository;
+        this.contaService = contaService;
     }
 
     @Transactional

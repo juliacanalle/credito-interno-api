@@ -1,14 +1,16 @@
 package io.github.juliacanalle.creditointernoapi.controller;
 
-import io.github.juliacanalle.creditointernoapi.dto.CepDto;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
+import io.github.juliacanalle.creditointernoapi.dto.OperacaoRequest;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.service.CepService;
 import io.github.juliacanalle.creditointernoapi.service.ColaboradorService;
+import io.github.juliacanalle.creditointernoapi.service.ContaService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/empresas/{cnpj}/colaboradores")
+@RequiredArgsConstructor
 public class ColaboradorController {
 
     @Autowired
@@ -33,6 +36,9 @@ public class ColaboradorController {
 
     @Autowired
     private CepService cepService;
+
+    @Autowired
+    private ContaService contaService;
 
     private Colaborador colaborador;
 
@@ -85,4 +91,17 @@ public class ColaboradorController {
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
 
+    @Transactional
+    @PostMapping(("/{cpf}/creditar"))
+    public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
+        contaService.creditarConta(request.valor(), cnpj, cpf);
+    }
+
+    public EmpresaRepository getEmpresaRepository() {
+        return empresaRepository;
+    }
+
+    public void setEmpresaRepository(EmpresaRepository empresaRepository) {
+        this.empresaRepository = empresaRepository;
+    }
 }
