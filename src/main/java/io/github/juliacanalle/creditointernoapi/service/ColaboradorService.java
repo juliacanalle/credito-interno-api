@@ -24,6 +24,7 @@ public class ColaboradorService {
     private final CepService cepService;
     private final EmpresaRepository empresaRepository;
     private final ColaboradorRepository colaboradorRepository;
+    Colaborador colaborador;
 
     public ColaboradorService(
             CepService cepService,
@@ -73,5 +74,25 @@ public class ColaboradorService {
         colaborador.setEmpresa(empresa);
 
         return colaboradorRepository.save(colaborador);
+    }
+
+    public void atualizarEnderecoColaborador(@Valid ColaboradorRequest request, String cpf) {
+        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+
+        CepDto cepDto = cepService.consultaCep(request.cep());
+
+        Endereco novoEndereco = new Endereco();
+        novoEndereco.setCep(request.cep());
+        novoEndereco.setLogradouro(cepDto.logradouro());
+        novoEndereco.setBairro(cepDto.bairro());
+        novoEndereco.setLocalidade(cepDto.localidade());
+        novoEndereco.setUf(cepDto.uf());
+        novoEndereco.setNumero(request.numero());
+        novoEndereco.setComplemento(request.complemento());
+
+        colaborador.setEndereco(novoEndereco);
     }
 }

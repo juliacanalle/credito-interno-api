@@ -1,10 +1,12 @@
 package io.github.juliacanalle.creditointernoapi.controller;
 
+import io.github.juliacanalle.creditointernoapi.dto.CepDto;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
+import io.github.juliacanalle.creditointernoapi.service.CepService;
 import io.github.juliacanalle.creditointernoapi.service.ColaboradorService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +24,15 @@ public class ColaboradorController {
 
     @Autowired
     private ColaboradorRepository colaboradorRepository;
+
     @Autowired
     private EmpresaRepository empresaRepository;
+
     @Autowired
     private ColaboradorService colaboradorService;
+
+    @Autowired
+    private CepService cepService;
 
     private Colaborador colaborador;
 
@@ -59,7 +66,7 @@ public class ColaboradorController {
     }
 
     @Transactional
-    @PutMapping(("/{cpf}"))
+    @PatchMapping(("/{cpf}"))
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -67,4 +74,15 @@ public class ColaboradorController {
         }
         colaborador.atualizarNome(request.nome());
     }
+
+    @Transactional
+    @PatchMapping(("/{cpf}/endereco"))
+    public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
+        var colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        colaboradorService.atualizarEnderecoColaborador(request, cpf);
+    }
+
 }
