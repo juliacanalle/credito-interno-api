@@ -15,7 +15,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Empresa {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank
@@ -39,10 +40,6 @@ public class Empresa {
         this.nome = nome;
         this.cnpj = cnpj;
         this.endereco = endereco;
-    }
-
-    public void excluir() {
-        this.ativo = false;
     }
 }
 

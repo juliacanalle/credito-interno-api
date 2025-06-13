@@ -8,9 +8,12 @@ import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.service.EmpresaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
@@ -25,7 +28,6 @@ public class EmpresaController {
     private EmpresaService empresaService;
 
     //Cadastro
-    @Transactional
     @PostMapping
     public ResponseEntity<EmpresaResponse> cadastrar(@RequestBody @Valid EmpresaRequest request) {
         Empresa empresaSalva = empresaService.cadastrarEmpresaComBuscaCep(request);
@@ -40,27 +42,33 @@ public class EmpresaController {
         return empresaRepository.findAll();
     }
 
-    @Transactional
+
     @PutMapping("/{cnpjAtual}")
     public void atualizar( @PathVariable String cnpjAtual, @RequestBody @Valid DadosAtualizaCadastroEmpresa dados) {
         var empresa = empresaRepository.findByCnpj(cnpjAtual);
         if(empresa == null) {
-            throw new RuntimeException ("Essa empresa não existe no sistema.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
+
         }
-        if (!dados.cnpjNovo().equals(cnpjAtual)) {
+        if (cnpjAtual.equals(dados.cnpjNovo())) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "O CNPJ novo não pode ser igual ao atual.");
+        }
+        if (!cnpjAtual.equals(dados.cnpjNovo())) {
             var outraEmpresa = empresaRepository.findByCnpj(dados.cnpjNovo());
             if (outraEmpresa != null) {
-                throw new RuntimeException ("Já existe empresa com esse CNPJ");
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe empresa com esse CNPJ.");
+
             }
-            empresa.setCnpj(dados.cnpjNovo());
         }
-        empresa.setNome(dados.nomeNovo());
+        empresaRepository.atualizarEmpresa(cnpjAtual, dados.cnpjNovo(), dados.nomeNovo());
     }
 
-    @Transactional
     @DeleteMapping("/{cnpjAtual}")
     public void deletar(@PathVariable String cnpjAtual) {
         Empresa empresa = empresaRepository.findByCnpj(cnpjAtual);
-        empresa.excluir();
+        if (empresa == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
+        }
+        empresaRepository.inativarEmpresa(cnpjAtual);
     }
 }

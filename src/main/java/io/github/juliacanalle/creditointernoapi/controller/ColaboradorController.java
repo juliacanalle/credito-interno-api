@@ -42,7 +42,6 @@ public class ColaboradorController {
 
     private Colaborador colaborador;
 
-    @Transactional
     @PostMapping
     public ResponseEntity<ColaboradorResponse> cadastrar(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cnpj") String cnpj) {
         Colaborador colaboradorSalvo = colaboradorService.cadastrarColaboradorComBuscaCep(request, cnpj);
@@ -61,17 +60,15 @@ public class ColaboradorController {
         return colaboradorRepository.findByCpf(cpf);
     }
 
-    @Transactional
     @DeleteMapping(("/{cpf}"))
     public void inativar(@PathVariable("cpf") String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        colaborador.inativarColaborador();
+        colaboradorRepository.delete(colaborador);
     }
 
-    @Transactional
     @PatchMapping(("/{cpf}"))
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
@@ -81,7 +78,6 @@ public class ColaboradorController {
         colaborador.atualizarNome(request.nome());
     }
 
-    @Transactional
     @PatchMapping(("/{cpf}/endereco"))
     public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
@@ -91,17 +87,8 @@ public class ColaboradorController {
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
 
-    @Transactional
     @PostMapping(("/{cpf}/creditar"))
     public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
         contaService.creditarConta(request.valor(), cnpj, cpf);
-    }
-
-    public EmpresaRepository getEmpresaRepository() {
-        return empresaRepository;
-    }
-
-    public void setEmpresaRepository(EmpresaRepository empresaRepository) {
-        this.empresaRepository = empresaRepository;
     }
 }
