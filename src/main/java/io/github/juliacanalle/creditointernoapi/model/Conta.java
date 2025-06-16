@@ -30,5 +30,14 @@ public class Conta {
             }
         this.saldo = this.saldo.add(valor);
         }
+
+    public void debitar(BigDecimal valor) {
+        BigDecimal limite = new BigDecimal("10000");
+        if (valor.compareTo(BigDecimal.ZERO) <= 0
+                && valor.compareTo(LIMITE_CREDITO) > 0) {
+            throw new IllegalArgumentException("Para realizar um saque o valor deve estar entre 0 e "  + LIMITE_CREDITO + ".");
+        }
+        this.saldo = this.saldo.subtract(valor);
+    }
     }
 
