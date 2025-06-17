@@ -45,10 +45,6 @@ public class Colaborador {
         this.endereco = new Endereco(endereco);
     }
 
-    public void inativarColaborador() {
-        this.ativo = false;
-    }
-
     public void atualizarNome(String novoNome) {
         this.nome = novoNome;
     }

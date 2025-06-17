@@ -70,19 +70,15 @@ public class ColaboradorController {
     public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
         return colaboradorRepository.findByCpf(cpf);
     }
-
-    @Transactional
-    @DeleteMapping("/{cpf}")
+  
     public void inativar(@PathVariable("cpf") String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-        colaborador.inativarColaborador();
+        colaboradorRepository.delete(colaborador);
     }
 
-    @Transactional
-    @PatchMapping("/{cpf}")
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -91,8 +87,6 @@ public class ColaboradorController {
         colaborador.atualizarNome(request.nome());
     }
 
-    @Transactional
-    @PatchMapping("/{cpf}/endereco")
     public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -100,6 +94,7 @@ public class ColaboradorController {
         }
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
+
 
     @PostMapping("/{cpf}/creditar")
     public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
