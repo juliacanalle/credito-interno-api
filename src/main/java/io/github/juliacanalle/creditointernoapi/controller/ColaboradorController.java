@@ -3,13 +3,17 @@ package io.github.juliacanalle.creditointernoapi.controller;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
 import io.github.juliacanalle.creditointernoapi.dto.OperacaoRequest;
+import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
+import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
 import io.github.juliacanalle.creditointernoapi.service.CepService;
 import io.github.juliacanalle.creditointernoapi.service.ColaboradorService;
 import io.github.juliacanalle.creditointernoapi.service.ContaService;
+import io.github.juliacanalle.creditointernoapi.service.TransacaoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,6 +46,12 @@ public class ColaboradorController {
 
     private Colaborador colaborador;
 
+    @Autowired
+    private TransacaoRepository transacaoRepository;
+
+    @Autowired
+    private TransacaoService transacaoService;
+
     @Transactional
     @PostMapping
     public ResponseEntity<ColaboradorResponse> cadastrar(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cnpj") String cnpj) {
@@ -56,13 +66,13 @@ public class ColaboradorController {
         return colaboradorRepository.findAllByAtivoTrue();
     }
 
-    @GetMapping(("/{cpf}"))
+    @GetMapping("/{cpf}")
     public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
         return colaboradorRepository.findByCpf(cpf);
     }
 
     @Transactional
-    @DeleteMapping(("/{cpf}"))
+    @DeleteMapping("/{cpf}")
     public void inativar(@PathVariable("cpf") String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -72,7 +82,7 @@ public class ColaboradorController {
     }
 
     @Transactional
-    @PatchMapping(("/{cpf}"))
+    @PatchMapping("/{cpf}")
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -82,7 +92,7 @@ public class ColaboradorController {
     }
 
     @Transactional
-    @PatchMapping(("/{cpf}/endereco"))
+    @PatchMapping("/{cpf}/endereco")
     public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -91,15 +101,19 @@ public class ColaboradorController {
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
 
-    @Transactional
-    @PostMapping(("/{cpf}/creditar"))
-    public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
+    @PostMapping("/{cpf}/creditar")
+    public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
         contaService.creditarConta(request.valor(), cnpj, cpf, request.mensagem());
     }
 
     @Transactional
-    @PostMapping(("/{cpf}/debitar"))
-    public void debitarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
+    @PostMapping("/{cpf}/debitar")
+    public void debitarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
         contaService.debitarConta(request.valor(), cnpj, cpf, request.mensagem());
+    }
+
+    @GetMapping("/{cpf}/transacoes")
+    public List<TransacaoResponse> extratoColaboradorPorCpf(@PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
+        return transacaoService.listarTransacoesPorCpf(cnpj, cpf);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
+    //Teste
     public Empresa findByCnpj(String cnpj);
 
 }
