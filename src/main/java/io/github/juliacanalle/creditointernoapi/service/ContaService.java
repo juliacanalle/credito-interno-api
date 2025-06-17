@@ -41,6 +41,7 @@ public class ContaService {
         if (empresaDoColaborador != empresa) {
             throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
         }
+<<<<<<< Updated upstream
         colaborador.getConta().creditar(valor);
     }
 
@@ -68,6 +69,9 @@ public class ContaService {
             throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
         }
         colaborador.getConta().debitar(valor);
+=======
+         colaborador.getConta().creditar(valor);
+>>>>>>> Stashed changes
     }
 }
 
