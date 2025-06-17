@@ -1,5 +1,6 @@
 package io.github.juliacanalle.creditointernoapi.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -9,5 +10,8 @@ public record OperacaoRequest(
 
         @NotNull
         @Positive
-        BigDecimal valor) {
+        BigDecimal valor,
+
+        @NotBlank
+        String mensagem) {
 }

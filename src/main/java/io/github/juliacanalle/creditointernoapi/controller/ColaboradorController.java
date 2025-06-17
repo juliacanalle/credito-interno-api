@@ -94,14 +94,12 @@ public class ColaboradorController {
     @Transactional
     @PostMapping(("/{cpf}/creditar"))
     public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
-        contaService.creditarConta(request.valor(), cnpj, cpf);
+        contaService.creditarConta(request.valor(), cnpj, cpf, request.mensagem());
     }
 
-    public EmpresaRepository getEmpresaRepository() {
-        return empresaRepository;
-    }
-
-    public void setEmpresaRepository(EmpresaRepository empresaRepository) {
-        this.empresaRepository = empresaRepository;
+    @Transactional
+    @PostMapping(("/{cpf}/debitar"))
+    public void debitarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable String cnpj) {
+        contaService.debitarConta(request.valor(), cnpj, cpf, request.mensagem());
     }
 }
