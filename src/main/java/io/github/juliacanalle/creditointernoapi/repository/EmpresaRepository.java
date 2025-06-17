@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
+    //Teste
     public Empresa findByCnpj(String cnpj);
 
 

@@ -1,12 +1,15 @@
 package io.github.juliacanalle.creditointernoapi.model;
 
+import io.github.juliacanalle.creditointernoapi.enums.TipoTransacao;
 import jakarta.persistence.*;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transacoes")
+@Data
 public class Transacao {
 
     @Id
@@ -23,8 +26,12 @@ public class Transacao {
     @Column(nullable = false)
     private String mensagem;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String tipo;
+    private TipoTransacao tipoTransacao;
+
+    @Column(nullable = false)
+    private BigDecimal valor;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
 }
