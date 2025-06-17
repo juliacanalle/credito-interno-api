@@ -12,11 +12,13 @@ public class Conta {
 
     private static final BigDecimal LIMITE_CREDITO = BigDecimal.valueOf(10_000);
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private BigDecimal saldo = BigDecimal.ZERO;
 
-    public Conta() { }
+    public Conta() {
+    }
 
     public Conta(BigDecimal saldo) {
         this.saldo = BigDecimal.ZERO;
@@ -26,10 +28,11 @@ public class Conta {
         BigDecimal limite = new BigDecimal("10000");
         if (valor.compareTo(BigDecimal.ZERO) <= 0
                 && valor.compareTo(LIMITE_CREDITO) > 0) {
-            throw new IllegalArgumentException("Para realizar um depósito o valor deve estar entre 0 e "  + LIMITE_CREDITO + ".");
-            }
-        this.saldo = this.saldo.add(valor);
+            throw new IllegalArgumentException("Para realizar um depósito o valor deve estar entre 0 e " + LIMITE_CREDITO + ".");
         }
+    }
+}
+
 
     public void debitar(BigDecimal valor) {
         BigDecimal limite = new BigDecimal("10000");
@@ -39,5 +42,7 @@ public class Conta {
         }
         this.saldo = this.saldo.subtract(valor);
     }
-    }
+
+}
+
 

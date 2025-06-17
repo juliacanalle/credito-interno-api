@@ -48,20 +48,11 @@ public class ContaService {
         if (empresaDoColaborador != empresa) {
             throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
         }
-        Conta conta = colaborador.getConta();
-        conta.creditar(valor);
-        BigDecimal novoSaldo = conta.getSaldo();
-
-        Transacao t = new Transacao();
-        t.setConta(conta);
-        t.setValor(valor);
-        t.setSaldo(novoSaldo);
-        t.setTipoTransacao(TipoTransacao.CREDITO);
-        t.setMensagem(mensagem);
-        transacaoRepository.save(t);
+        colaborador.getConta().creditar(valor);
     }
 
     public void debitarConta(BigDecimal valor, String cnpj, String cpf, String mensagem) {
+
         var empresa = empresaRepository.findByCnpj(cnpj);
         if (empresa == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -84,7 +75,7 @@ public class ContaService {
         if (empresaDoColaborador != empresa) {
             throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
         }
-
+      
         Conta conta = colaborador.getConta();
         conta.debitar(valor);
         BigDecimal novoSaldo = conta.getSaldo();
@@ -96,5 +87,7 @@ public class ContaService {
         t.setTipoTransacao(TipoTransacao.DEBITO);
         t.setMensagem(mensagem);
         transacaoRepository.save(t);
+
     }
 }
+
