@@ -48,7 +48,18 @@ public class ContaService {
         if (empresaDoColaborador != empresa) {
             throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
         }
-        colaborador.getConta().creditar(valor);
+
+        Conta conta = colaborador.getConta();
+        conta.creditar(valor);
+        BigDecimal novoSaldo = conta.getSaldo();
+
+        Transacao t = new Transacao();
+        t.setConta(conta);
+        t.setValor(valor);
+        t.setSaldo(novoSaldo);
+        t.setTipoTransacao(TipoTransacao.CREDITO);
+        t.setMensagem(mensagem);
+        transacaoRepository.save(t);
     }
 
     public void debitarConta(BigDecimal valor, String cnpj, String cpf, String mensagem) {

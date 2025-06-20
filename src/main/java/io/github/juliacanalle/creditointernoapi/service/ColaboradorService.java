@@ -44,7 +44,6 @@ public class ColaboradorService {
     public Colaborador cadastrarColaboradorComBuscaCep (@Valid ColaboradorRequest request, String cnpj) {
         CepDto cepDto = cepService.consultaCep(request.cep());
 
-        //Criação do endereço
         Endereco endereco = new Endereco();
         endereco.setCep(request.cep());
         endereco.setLogradouro(cepDto.logradouro());
@@ -61,13 +60,11 @@ public class ColaboradorService {
             );
         }
 
-        //Criação do colaborador
         Colaborador colaborador = new Colaborador();
         colaborador.setNome(request.nome());
         colaborador.setCpf(request.cpf());
         colaborador.setEndereco(endereco);
 
-        //Criação da conta e atribuição da mesma ao colaborador criado anteriormente
         Conta  conta = new Conta();
         colaborador.setConta(conta);
 

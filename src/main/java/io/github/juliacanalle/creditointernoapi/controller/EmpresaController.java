@@ -27,7 +27,6 @@ public class EmpresaController {
     @Autowired
     private EmpresaService empresaService;
 
-    //Cadastro
     @PostMapping
     public ResponseEntity<EmpresaResponse> cadastrar(@RequestBody @Valid EmpresaRequest request) {
         Empresa empresaSalva = empresaService.cadastrarEmpresaComBuscaCep(request);
@@ -36,7 +35,6 @@ public class EmpresaController {
         return ResponseEntity.ok(response);
     }
 
-    //Consulta de empresas cadastradas
     @GetMapping
     public List<Empresa> listar() {
         return empresaRepository.findAll();
@@ -48,16 +46,11 @@ public class EmpresaController {
         var empresa = empresaRepository.findByCnpj(cnpjAtual);
         if(empresa == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
-
-        }
-        if (cnpjAtual.equals(dados.cnpjNovo())) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "O CNPJ novo não pode ser igual ao atual.");
         }
         if (!cnpjAtual.equals(dados.cnpjNovo())) {
             var outraEmpresa = empresaRepository.findByCnpj(dados.cnpjNovo());
             if (outraEmpresa != null) {
                 throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe empresa com esse CNPJ.");
-
             }
         }
         empresaRepository.atualizarEmpresa(cnpjAtual, dados.cnpjNovo(), dados.nomeNovo());

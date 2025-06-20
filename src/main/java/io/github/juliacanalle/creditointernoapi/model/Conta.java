@@ -31,8 +31,6 @@ public class Conta {
             throw new IllegalArgumentException("Para realizar um depósito o valor deve estar entre 0 e " + LIMITE_CREDITO + ".");
         }
     }
-}
-
 
     public void debitar(BigDecimal valor) {
         BigDecimal limite = new BigDecimal("10000");
@@ -42,7 +40,9 @@ public class Conta {
         }
         this.saldo = this.saldo.subtract(valor);
     }
-
 }
+
+
+
 
 

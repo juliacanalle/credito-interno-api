@@ -9,9 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
-    //Teste
     public Empresa findByCnpj(String cnpj);
-
 
     @Query("UPDATE Empresa e SET e.cnpj = :cnpjNovo, e.nome = :nomeNovo WHERE e.cnpj = :cnpjAtual")
     @Transactional
