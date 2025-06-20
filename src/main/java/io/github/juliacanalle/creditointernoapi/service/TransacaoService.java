@@ -1,5 +1,6 @@
 package io.github.juliacanalle.creditointernoapi.service;
 import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
+import io.github.juliacanalle.creditointernoapi.exceptions.*;
 import io.github.juliacanalle.creditointernoapi.model.Conta;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Transacao;
@@ -29,25 +30,25 @@ public class TransacaoService {
     public List <TransacaoResponse> listarTransacoesPorCpf (String cnpj, String cpf) {
         var empresa = empresaRepository.findByCnpj(cnpj);
         if (empresa == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EmpresaNotFoundException(cnpj);
         }
 
         if (!empresa.isAtivo()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new InactiveEmpresaException(cnpj);
         }
 
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ColaboradorNotFoundException(cpf);
         }
 
         if (!colaborador.isAtivo()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new InactiveColaboradorException(cpf);
         }
 
         var empresaDoColaborador = colaborador.getEmpresa();
         if (empresaDoColaborador != empresa) {
-            throw new IllegalArgumentException("Esse colaborador não pertence a empresa " + empresa + ".");
+            throw new ColaboradorNotInCompanyException(cpf, cnpj);
         }
 
         Conta conta = colaborador.getConta();

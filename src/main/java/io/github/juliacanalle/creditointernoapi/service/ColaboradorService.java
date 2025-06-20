@@ -3,6 +3,9 @@ package io.github.juliacanalle.creditointernoapi.service;
 import io.github.juliacanalle.creditointernoapi.dto.CepDto;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.EmpresaRequest;
+import io.github.juliacanalle.creditointernoapi.exceptions.ColaboradorNotFoundException;
+import io.github.juliacanalle.creditointernoapi.exceptions.CpfAlreadyExistsException;
+import io.github.juliacanalle.creditointernoapi.exceptions.EmpresaNotFoundException;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.model.Conta;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
@@ -32,8 +35,8 @@ public class ColaboradorService {
             CepService cepService,
             EmpresaRepository empresaRepository,
             ColaboradorRepository colaboradorRepository,
-            ContaService contaService
-    ) {
+            ContaService contaService)
+    {
         this.cepService = cepService;
         this.empresaRepository = empresaRepository;
         this.colaboradorRepository = colaboradorRepository;
@@ -54,10 +57,7 @@ public class ColaboradorService {
         endereco.setComplemento(request.complemento());
 
         if (colaboradorRepository.existsByCpf(request.cpf())) {
-            throw new ResponseStatusException(
-                    HttpStatus.CONFLICT,
-                    "CPF " + request.cpf() + " já cadastrado"
-            );
+            throw new CpfAlreadyExistsException(request.cpf());
         }
 
         Colaborador colaborador = new Colaborador();
@@ -70,7 +70,7 @@ public class ColaboradorService {
 
         Empresa empresa = empresaRepository.findByCnpj(cnpj);
         if (empresa == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new EmpresaNotFoundException(cnpj);
         }
         colaborador.setEmpresa(empresa);
 
@@ -80,7 +80,7 @@ public class ColaboradorService {
     public void atualizarEnderecoColaborador(@Valid ColaboradorRequest request, String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ColaboradorNotFoundException(cpf);
         }
 
         CepDto cepDto = cepService.consultaCep(request.cep());

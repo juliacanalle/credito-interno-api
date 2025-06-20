@@ -22,6 +22,6 @@ public class EnderecoController {
 
     @GetMapping(value = "/{cep}")
     public ResponseEntity<CepDto> consultaCep(@PathVariable String cep) {
-return ResponseEntity.ok(service.consultaCep(cep));
+        return ResponseEntity.ok(service.consultaCep(cep));
     }
 }

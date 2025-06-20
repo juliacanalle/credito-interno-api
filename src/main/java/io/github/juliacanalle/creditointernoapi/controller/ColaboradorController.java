@@ -4,6 +4,7 @@ import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
 import io.github.juliacanalle.creditointernoapi.dto.OperacaoRequest;
 import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
+import io.github.juliacanalle.creditointernoapi.exceptions.ColaboradorNotFoundException;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
@@ -75,7 +76,7 @@ public class ColaboradorController {
     public void inativar(@PathVariable("cpf") String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ColaboradorNotFoundException(cpf);
         }
         colaboradorRepository.delete(colaborador);
     }
@@ -84,7 +85,7 @@ public class ColaboradorController {
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ColaboradorNotFoundException(cpf);
         }
         colaborador.atualizarNome(request.nome());
     }
@@ -93,7 +94,7 @@ public class ColaboradorController {
     public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ColaboradorNotFoundException(cpf);
         }
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
