@@ -17,12 +17,15 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -111,7 +114,16 @@ public class ColaboradorController {
     }
 
     @GetMapping("/{cpf}/transacoes")
-    public List<TransacaoResponse> extratoColaboradorPorCpf(@PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
+    public List<TransacaoResponse> extratoColaboradorPorCpf(
+            @PathVariable String cnpj,
+            @PathVariable String cpf,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
+            @RequestParam(required = false) BigDecimal valorMin,
+            @RequestParam(required = false) BigDecimal valorMax,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "dataHora,desc") String sort) {
         return transacaoService.listarTransacoesPorCpf(cnpj, cpf);
     }
 }

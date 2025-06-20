@@ -8,10 +8,13 @@ import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +30,15 @@ public class TransacaoService {
     @Autowired
     private ColaboradorRepository colaboradorRepository;
 
-    public List <TransacaoResponse> listarTransacoesPorCpf (String cnpj, String cpf) {
+    public List <TransacaoResponse> listarTransacoesPorCpf (
+            String cnpj,
+            String cpf,
+            LocalDate dataInicio,
+            LocalDate dataFim,
+            BigDecimal valorMin,
+            BigDecimal valorMax,
+            Pageable pageable) {
+
         var empresa = empresaRepository.findByCnpj(cnpj);
         if (empresa == null) {
             throw new EmpresaNotFoundException(cnpj);
