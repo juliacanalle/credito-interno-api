@@ -13,6 +13,4 @@ import java.util.List;
 public interface TransacaoRepository extends JpaRepository<Transacao, Long> {
 
     List<Transacao> findByConta(Conta conta);
-
-    Page<Transacao> findByContaAndDate (Conta conta, Pageable pageable, LocalDateTime inicio, LocalDateTime fim);
 }

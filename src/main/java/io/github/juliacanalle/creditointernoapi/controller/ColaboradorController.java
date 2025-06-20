@@ -81,7 +81,7 @@ public class ColaboradorController {
         colaboradorRepository.delete(colaborador);
     }
 
-    @PatchMapping("/{cpf}")
+    @PatchMapping("/{cpf}/nome")
     public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
@@ -90,7 +90,7 @@ public class ColaboradorController {
         colaborador.atualizarNome(request.nome());
     }
 
-    @PatchMapping("/{cpf}")
+    @PatchMapping("/{cpf}/endereco")
     public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
         var colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
