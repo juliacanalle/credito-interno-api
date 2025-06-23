@@ -1,22 +1,23 @@
 package io.github.juliacanalle.creditointernoapi.service;
 import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
-import io.github.juliacanalle.creditointernoapi.exceptions.*;
+import io.github.juliacanalle.creditointernoapi.exceptions.ColaboradorNotFoundException;
+import io.github.juliacanalle.creditointernoapi.exceptions.ContaNotFoundException;
+import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.model.Conta;
-import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Transacao;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
+import io.github.juliacanalle.creditointernoapi.repository.ContaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Service
 public class TransacaoService {
@@ -25,52 +26,34 @@ public class TransacaoService {
     private TransacaoRepository transacaoRepository;
 
     @Autowired
-    private EmpresaRepository empresaRepository;
-
-    @Autowired
     private ColaboradorRepository colaboradorRepository;
 
-    public List <TransacaoResponse> listarTransacoesPorCpf (
+    public Page<TransacaoResponse> listarTransacoesPorCpf(
             String cnpj,
             String cpf,
             LocalDate dataInicio,
             LocalDate dataFim,
             BigDecimal valorMin,
             BigDecimal valorMax,
-            Pageable pageable) {
-
-        var empresa = empresaRepository.findByCnpj(cnpj);
-        if (empresa == null) {
-            throw new EmpresaNotFoundException(cnpj);
-        }
-
-        if (!empresa.isAtivo()) {
-            throw new InactiveEmpresaException(cnpj);
-        }
-
-        var colaborador = colaboradorRepository.findByCpf(cpf);
-        if (colaborador == null) {
-            throw new ColaboradorNotFoundException(cpf);
-        }
-
-        if (!colaborador.isAtivo()) {
-            throw new InactiveColaboradorException(cpf);
-        }
-
-        var empresaDoColaborador = colaborador.getEmpresa();
-        if (empresaDoColaborador != empresa) {
-            throw new ColaboradorNotInCompanyException(cpf, cnpj);
-        }
+            Pageable pageable
+    ) {
+        Colaborador colaborador = colaboradorRepository.findByCpfAndEmpresaCnpj(cpf, cnpj)
+                .orElseThrow(() -> new ColaboradorNotFoundException(cpf));
 
         Conta conta = colaborador.getConta();
-        List<Transacao> transacoes = transacaoRepository.findByConta(conta);
+        if (conta == null) {
+            throw new ContaNotFoundException(cnpj, cpf);
+        }
 
-        List<TransacaoResponse> respostas = transacoes.stream()
-                .map(TransacaoResponse::new)
-                .collect(Collectors.toList());
-        return respostas;
+        LocalDateTime inicio = dataInicio.atStartOfDay();
+        LocalDateTime fim = dataFim.atTime(LocalTime.MAX);
+
+        BigDecimal min = valorMin != null ? valorMin : BigDecimal.ZERO;
+        BigDecimal max = valorMax != null ? valorMax : new BigDecimal("999999999");
+
+        Page<Transacao> transacoes = transacaoRepository.findByContaAndCriadoEmBetweenAndValorBetween(
+                conta, inicio, fim, min, max, pageable);
+
+        return transacoes.map(TransacaoResponse::new);
     }
-
-
-
 }

@@ -30,6 +30,7 @@ public class Conta {
                 && valor.compareTo(LIMITE_CREDITO) > 0) {
             throw new IllegalArgumentException("Para realizar um depósito o valor deve estar entre 0 e " + LIMITE_CREDITO + ".");
         }
+        this.saldo = this.saldo.add(valor);
     }
 
     public void debitar(BigDecimal valor) {

@@ -40,6 +40,7 @@ public class EmpresaService {
         empresa.setNome(request.nome());
         empresa.setCnpj(request.cnpj());
         empresa.setEndereco(endereco);
+        empresa.setAtivo(true);
 
         return empresaRepository.save(empresa);
     }

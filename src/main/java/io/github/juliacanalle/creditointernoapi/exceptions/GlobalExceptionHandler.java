@@ -38,5 +38,26 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleColaboradorNotInCompanyException(ColaboradorNotInCompanyException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
     }
+
+    @ExceptionHandler(DataRangeExceedLimitException.class)
+    public ResponseEntity<String> handleDataRangeExceedLimitException(DataRangeExceedLimitException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(MinValueGreaterThanMaxValueException.class)
+    public ResponseEntity<String> handleMinValueGreaterThanMaxValueException(MinValueGreaterThanMaxValueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InvalidSortFieldException.class)
+    public ResponseEntity<String> handleInvalidSortFieldException(InvalidSortFieldException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(ContaNotFoundException.class)
+    public ResponseEntity<String> handleContaNotFoundException(ContaNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
 }
 

@@ -28,8 +28,6 @@ public class ColaboradorService {
     private final EmpresaRepository empresaRepository;
     private final ColaboradorRepository colaboradorRepository;
     private final ContaService contaService;
-    Colaborador colaborador;
-
 
     public ColaboradorService(
             CepService cepService,

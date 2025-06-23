@@ -4,8 +4,9 @@ import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
 import io.github.juliacanalle.creditointernoapi.dto.OperacaoRequest;
 import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
-import io.github.juliacanalle.creditointernoapi.exceptions.ColaboradorNotFoundException;
+import io.github.juliacanalle.creditointernoapi.exceptions.*;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
+import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
@@ -16,7 +17,12 @@ import io.github.juliacanalle.creditointernoapi.service.TransacaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +32,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -66,8 +73,14 @@ public class ColaboradorController {
     }
 
     @GetMapping
-    public List<Colaborador> listarColaboradores(@PathVariable("cnpj") String cnpj) {
-        return colaboradorRepository.findAllByAtivoTrue();
+    public List<ColaboradorResponse> listarPorEmpresa(@PathVariable String cnpj) {
+        Empresa empresa = empresaRepository.findByCnpj(cnpj);
+                if(empresa == null) {
+                    throw new EmpresaNotFoundException(cnpj);
+                }
+
+        return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
+                .stream().map(ColaboradorResponse::new).toList();
     }
 
     @GetMapping("/{cpf}")
@@ -81,7 +94,7 @@ public class ColaboradorController {
         if (colaborador == null) {
             throw new ColaboradorNotFoundException(cpf);
         }
-        colaboradorRepository.delete(colaborador);
+        colaboradorRepository.inativarColaborador(cpf);
     }
 
     @PatchMapping("/{cpf}/nome")
@@ -114,7 +127,7 @@ public class ColaboradorController {
     }
 
     @GetMapping("/{cpf}/transacoes")
-    public List<TransacaoResponse> extratoColaboradorPorCpf(
+    public Page<TransacaoResponse> extratoColaboradorPorCpf(
             @PathVariable String cnpj,
             @PathVariable String cpf,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
@@ -123,7 +136,38 @@ public class ColaboradorController {
             @RequestParam(required = false) BigDecimal valorMax,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "dataHora,desc") String sort) {
-        return transacaoService.listarTransacoesPorCpf(cnpj, cpf);
+            @RequestParam(defaultValue = "dataHora,desc") String sort
+    ) {
+        if (dataInicio == null || dataFim == null) {
+            dataFim = LocalDate.now();
+            dataInicio = dataFim.minusDays(30);
+        }
+
+        if (ChronoUnit.DAYS.between(dataInicio, dataFim) > 30) {
+            throw new DataRangeExceedLimitException(dataInicio, dataFim);
+        }
+
+        if (valorMin != null && valorMax != null && valorMin.compareTo(valorMax) > 0) {
+            throw new MinValueGreaterThanMaxValueException(valorMin, valorMax);
+        }
+
+        String[] sortParts = sort.split(",");
+        String campo = sortParts[0];
+        String direcao = sortParts.length > 1 ? sortParts[1] : "asc";
+
+        if (!campo.equals("valor") && !campo.equals("criadoEm")) {
+            throw new InvalidSortFieldException(campo);
+        }
+
+        Sort.Direction direction = direcao.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, campo));
+
+        return transacaoService.listarTransacoesPorCpf(
+                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, pageable
+        );
     }
+
 }
