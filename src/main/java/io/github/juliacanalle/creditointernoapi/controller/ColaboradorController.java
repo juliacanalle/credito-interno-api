@@ -51,13 +51,7 @@ public class ColaboradorController {
     private ColaboradorService colaboradorService;
 
     @Autowired
-    private CepService cepService;
-
-    @Autowired
     private ContaService contaService;
-
-    @Autowired
-    private TransacaoRepository transacaoRepository;
 
     @Autowired
     private TransacaoService transacaoService;

@@ -11,18 +11,18 @@ import java.util.Optional;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
-    public Empresa findByCnpj(String cnpj);
+    Empresa findByCnpj(String cnpj);
 
     @Query("UPDATE Empresa e SET e.cnpj = :cnpjNovo, e.nome = :nomeNovo WHERE e.cnpj = :cnpjAtual")
     @Transactional
     @Modifying
-    public void atualizarEmpresa(@Param("cnpjAtual") String cnpjAtual,
+    void atualizarEmpresa(@Param("cnpjAtual") String cnpjAtual,
                                  @Param("cnpjNovo") String cnpjNovo,
                                  @Param("nomeNovo") String nomeNovo);
 
     @Query("UPDATE Empresa e SET e.ativo = false WHERE e.cnpj = :cnpjAtual")
     @Transactional
     @Modifying
-    public void inativarEmpresa(@Param("cnpjAtual") String cnpjAtual);
+    void inativarEmpresa(@Param("cnpjAtual") String cnpjAtual);
 }
 

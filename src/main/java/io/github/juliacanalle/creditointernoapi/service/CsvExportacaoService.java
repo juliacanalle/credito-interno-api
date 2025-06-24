@@ -1,12 +1,9 @@
 package io.github.juliacanalle.creditointernoapi.service;
-
 import io.github.juliacanalle.creditointernoapi.model.Transacao;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -19,7 +16,7 @@ public class CsvExportacaoService {
         response.setHeader("Content-Disposition", "attachment; filename=\"extrato_" + cpf + ".csv\"");
 
         OutputStreamWriter writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
-        writer.write('\uFEFF'); // <-- BOM (Byte Order Mark)
+        writer.write('\uFEFF');
 
         writer.write("Data,Tipo,Valor,Descrição\n");
 
