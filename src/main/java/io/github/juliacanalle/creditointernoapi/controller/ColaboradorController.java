@@ -7,13 +7,12 @@ import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
 import io.github.juliacanalle.creditointernoapi.exceptions.*;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
+import io.github.juliacanalle.creditointernoapi.model.Transacao;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
-import io.github.juliacanalle.creditointernoapi.service.CepService;
-import io.github.juliacanalle.creditointernoapi.service.ColaboradorService;
-import io.github.juliacanalle.creditointernoapi.service.ContaService;
-import io.github.juliacanalle.creditointernoapi.service.TransacaoService;
+import io.github.juliacanalle.creditointernoapi.service.*;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -55,13 +56,14 @@ public class ColaboradorController {
     @Autowired
     private ContaService contaService;
 
-    private Colaborador colaborador;
-
     @Autowired
     private TransacaoRepository transacaoRepository;
 
     @Autowired
     private TransacaoService transacaoService;
+
+    @Autowired
+    private CsvExportacaoService csvExporterService;
 
     @Transactional
     @PostMapping
@@ -136,8 +138,7 @@ public class ColaboradorController {
             @RequestParam(required = false) BigDecimal valorMax,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "dataHora,desc") String sort
-    ) {
+            @RequestParam(defaultValue = "dataHora,desc") String sort) {
         if (dataInicio == null || dataFim == null) {
             dataFim = LocalDate.now();
             dataInicio = dataFim.minusDays(30);
@@ -170,4 +171,37 @@ public class ColaboradorController {
         );
     }
 
+    @GetMapping(value = "/{cpf}/transacoes/exportar", produces = "text/csv")
+    public void exportarExtratoCsv(
+            @PathVariable String cnpj,
+            @PathVariable String cpf,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataInicio,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataFim,
+            @RequestParam(required = false) BigDecimal valorMin,
+            @RequestParam(required = false) BigDecimal valorMax,
+            @RequestParam(defaultValue = "criadoEm,desc") String sort,
+            HttpServletResponse response
+    ) throws IOException {
+
+        if (dataInicio == null || dataFim == null) {
+            dataFim = LocalDate.now();
+            dataInicio = dataFim.minusDays(30);
+        }
+
+        String[] sortParts = sort.split(",");
+        String campo = sortParts[0];
+        String direcao = sortParts.length > 1 ? sortParts[1] : "asc";
+
+        Sort.Direction direction = direcao.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
+
+        Sort sortObj = Sort.by(direction, campo);
+
+        List<Transacao> transacoes = transacaoService.listarTodasTransacoesPorCpf(
+                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, sortObj
+        );
+
+        csvExporterService.exportarTransacoes(transacoes, response, cpf);
+    }
 }
