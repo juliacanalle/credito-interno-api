@@ -5,7 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Service
@@ -16,15 +18,19 @@ public class CsvExportacaoService {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-Disposition", "attachment; filename=\"extrato_" + cpf + ".csv\"");
 
-        PrintWriter writer = response.getWriter();
-        writer.println("Data,Tipo,Valor,Descrição");
+        OutputStreamWriter writer = new OutputStreamWriter(response.getOutputStream(), StandardCharsets.UTF_8);
+        writer.write('\uFEFF'); // <-- BOM (Byte Order Mark)
+
+        writer.write("Data,Tipo,Valor,Descrição\n");
 
         for (Transacao t : transacoes) {
-            writer.printf("%s,%s,%s,%s%n",
+            writer.write(String.format(
+                    "%s,%s,%s,%s\n",
                     t.getCriadoEm(),
                     t.getTipoTransacao(),
                     t.getValor(),
-                    t.getMensagem());
+                    t.getMensagem()
+            ));
         }
 
         writer.flush();
