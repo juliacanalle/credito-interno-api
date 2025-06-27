@@ -23,6 +23,8 @@ public class EmpresaController {
     @Autowired
     private EmpresaService empresaService;
 
+
+    //AQUI TA OK
     @PostMapping
     public ResponseEntity<EmpresaResponse> cadastrar(@RequestBody @Valid EmpresaRequest request) {
         Empresa empresaSalva = empresaService.cadastrarEmpresaComBuscaCep(request);
@@ -31,25 +33,16 @@ public class EmpresaController {
         return ResponseEntity.ok(response);
     }
 
+    //AQUI TA OK
     @GetMapping
     public List<Empresa> listar() {
         return empresaRepository.findAll();
     }
 
-
+    //ATUALIZADO E MELHORADO
     @PutMapping("/{cnpjAtual}")
     public void atualizar( @PathVariable String cnpjAtual, @RequestBody @Valid DadosAtualizaCadastroEmpresa dados) {
-        var empresa = empresaRepository.findByCnpj(cnpjAtual);
-        if(empresa == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
-        }
-        if (!cnpjAtual.equals(dados.cnpjNovo())) {
-            var outraEmpresa = empresaRepository.findByCnpj(dados.cnpjNovo());
-            if (outraEmpresa != null) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe empresa com esse CNPJ.");
-            }
-        }
-        empresaRepository.atualizarEmpresa(cnpjAtual, dados.cnpjNovo(), dados.nomeNovo());
+        empresaService.atualizarEmpresa(cnpjAtual, dados);
     }
 
     @DeleteMapping("/{cnpjAtual}")

@@ -86,5 +86,4 @@ public class TransacaoService {
                 conta, inicio, fim, min, max, sort
         );
     }
-
 }

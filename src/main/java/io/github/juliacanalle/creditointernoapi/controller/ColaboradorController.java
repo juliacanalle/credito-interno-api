@@ -1,22 +1,16 @@
 package io.github.juliacanalle.creditointernoapi.controller;
 
-import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
-import io.github.juliacanalle.creditointernoapi.dto.ColaboradorResponse;
-import io.github.juliacanalle.creditointernoapi.dto.OperacaoRequest;
-import io.github.juliacanalle.creditointernoapi.dto.TransacaoResponse;
+import io.github.juliacanalle.creditointernoapi.dto.*;
 import io.github.juliacanalle.creditointernoapi.exceptions.*;
 import io.github.juliacanalle.creditointernoapi.model.Colaborador;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Transacao;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
-import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
 import io.github.juliacanalle.creditointernoapi.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -68,54 +62,43 @@ public class ColaboradorController {
         return ResponseEntity.ok(response);
     }
 
+    //ALTERADO E MELHORADO
     @GetMapping
     public List<ColaboradorResponse> listarPorEmpresa(@PathVariable String cnpj) {
-        Empresa empresa = empresaRepository.findByCnpj(cnpj);
-                if(empresa == null) {
-                    throw new EmpresaNotFoundException(cnpj);
-                }
-
-        return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
-                .stream().map(ColaboradorResponse::new).toList();
+        return colaboradorService.listarColaboradoresPorEmpresa(cnpj);
     }
 
+    //AQUI TA OK
     @GetMapping("/{cpf}")
     public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
         return colaboradorRepository.findByCpf(cpf);
     }
 
+    //ALTERADO E MELHORADO
     @DeleteMapping("/{cpf}")
     public void inativar(@PathVariable("cpf") String cpf) {
-        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
-        if (colaborador == null) {
-            throw new ColaboradorNotFoundException(cpf);
-        }
-        colaboradorRepository.inativarColaborador(cpf);
+        colaboradorService.inativarColaborador(cpf);
     }
 
+    //ALTERADO E MELHORADO
     @PatchMapping("/{cpf}/nome")
-    public void atualizarNome(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
-        var colaborador = colaboradorRepository.findByCpf(cpf);
-        if (colaborador == null) {
-            throw new ColaboradorNotFoundException(cpf);
-        }
-        colaborador.atualizarNome(request.nome());
+    public void atualizarNome(@RequestBody @Valid AtualizaNomeRequest request, @PathVariable("cpf") String cpf, String novoNome) {
+        colaboradorService.atualizarNomeColaborador(cpf, request.nome());
     }
 
+    //ALTERADO E MELHORADO
     @PatchMapping("/{cpf}/endereco")
-    public void atualizarEndereco(@RequestBody @Valid ColaboradorRequest request, @PathVariable("cpf") String cpf) {
-        var colaborador = colaboradorRepository.findByCpf(cpf);
-        if (colaborador == null) {
-            throw new ColaboradorNotFoundException(cpf);
-        }
+    public void atualizarEndereco(@RequestBody @Valid AtualizaEnderecoRequest request, @PathVariable("cpf") String cpf) {
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
 
+    //AQUI TA OK
     @PostMapping("/{cpf}/creditar")
     public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
         contaService.creditarConta(request.valor(), cnpj, cpf, request.mensagem());
     }
 
+    //AQUI TA OK
     @Transactional
     @PostMapping("/{cpf}/debitar")
     public void debitarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {

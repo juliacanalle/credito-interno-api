@@ -1,8 +1,6 @@
 package io.github.juliacanalle.creditointernoapi.service;
 
-import io.github.juliacanalle.creditointernoapi.dto.CepDto;
-import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
-import io.github.juliacanalle.creditointernoapi.dto.EmpresaRequest;
+import io.github.juliacanalle.creditointernoapi.dto.*;
 import io.github.juliacanalle.creditointernoapi.exceptions.ColaboradorNotFoundException;
 import io.github.juliacanalle.creditointernoapi.exceptions.CpfAlreadyExistsException;
 import io.github.juliacanalle.creditointernoapi.exceptions.EmpresaNotFoundException;
@@ -18,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -75,7 +75,7 @@ public class ColaboradorService {
         return colaboradorRepository.save(colaborador);
     }
 
-    public void atualizarEnderecoColaborador(@Valid ColaboradorRequest request, String cpf) {
+    public void atualizarEnderecoColaborador(@Valid AtualizaEnderecoRequest request, String cpf) {
         Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
         if (colaborador == null) {
             throw new ColaboradorNotFoundException(cpf);
@@ -93,5 +93,33 @@ public class ColaboradorService {
         novoEndereco.setComplemento(request.complemento());
 
         colaborador.setEndereco(novoEndereco);
+        colaboradorRepository.save(colaborador);
     }
-}
+
+    public void atualizarNomeColaborador(String cpf, String novoNome) {
+        var colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ColaboradorNotFoundException(cpf);
+        }
+        colaborador.setNome(novoNome);
+        colaboradorRepository.save(colaborador);
+    }
+
+    public void inativarColaborador(String cpf) {
+        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
+        if (colaborador == null) {
+            throw new ColaboradorNotFoundException(cpf);
+        }
+        colaboradorRepository.inativarColaborador(cpf);
+    }
+
+    public List<ColaboradorResponse> listarColaboradoresPorEmpresa(String cnpj) {
+            Empresa empresa = empresaRepository.findByCnpj(cnpj);
+            if(empresa == null) {
+                throw new EmpresaNotFoundException(cnpj);
+            }
+            return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
+                    .stream().map(ColaboradorResponse::new).toList();
+        }
+
+    }

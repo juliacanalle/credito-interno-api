@@ -4,15 +4,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 
-public record EmpresaRequest(
-
-        @NotBlank
-        @Min(3)
-        String nome,
-
-        @NotBlank
-        @Pattern(regexp = "14")
-        String cnpj,
+public record AtualizaEnderecoRequest(
 
         @NotBlank
         @Pattern(regexp = "8")

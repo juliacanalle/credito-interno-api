@@ -1,6 +1,7 @@
 package io.github.juliacanalle.creditointernoapi.model;
 
 import io.github.juliacanalle.creditointernoapi.dto.DadosEndereco;
+import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -43,9 +44,5 @@ public class Colaborador {
         this.nome = nome;
         this.cpf = cpf;
         this.endereco = new Endereco(endereco);
-    }
-
-    public void atualizarNome(String novoNome) {
-        this.nome = novoNome;
     }
 }

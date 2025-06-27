@@ -10,54 +10,87 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ColaboradorNotFoundException.class)
-    public ResponseEntity<String> handleColaboradorNotFound(ColaboradorNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleColaboradorNotFound(ColaboradorNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(EmpresaNotFoundException.class)
-    public ResponseEntity<String> handleEmpresaNotFoundException(EmpresaNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleEmpresaNotFoundException(EmpresaNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(CpfAlreadyExistsException.class)
-    public ResponseEntity<String> handleCpfAlreadyExistsException(CpfAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleCpfAlreadyExistsException(CpfAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InactiveColaboradorException.class)
-    public ResponseEntity<String> handleInactiveColaboradorException(InactiveColaboradorException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleInactiveColaboradorException(InactiveColaboradorException ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InactiveEmpresaException.class)
-    public ResponseEntity<String> handleInactiveEmpresaException(InactiveEmpresaException ex) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleInactiveEmpresaException(InactiveEmpresaException ex) {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ColaboradorNotInCompanyException.class)
-    public ResponseEntity<String> handleColaboradorNotInCompanyException(ColaboradorNotInCompanyException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleColaboradorNotInCompanyException(ColaboradorNotInCompanyException ex) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(DataRangeExceedLimitException.class)
-    public ResponseEntity<String> handleDataRangeExceedLimitException(DataRangeExceedLimitException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleDataRangeExceedLimitException(DataRangeExceedLimitException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(MinValueGreaterThanMaxValueException.class)
-    public ResponseEntity<String> handleMinValueGreaterThanMaxValueException(MinValueGreaterThanMaxValueException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleMinValueGreaterThanMaxValueException(MinValueGreaterThanMaxValueException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(InvalidSortFieldException.class)
-    public ResponseEntity<String> handleInvalidSortFieldException(InvalidSortFieldException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleInvalidSortFieldException(InvalidSortFieldException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
     @ExceptionHandler(ContaNotFoundException.class)
-    public ResponseEntity<String> handleContaNotFoundException(ContaNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleContaNotFoundException(ContaNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
     }
 
+    @ExceptionHandler(AtLeastOneFieldPresentException.class)
+    public ResponseEntity<ErrorResponse> handleAtLeastOneFieldPresentException(AtLeastOneFieldPresentException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
+
+    @ExceptionHandler(CepNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCepNotFoundException(CepNotFoundException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
 

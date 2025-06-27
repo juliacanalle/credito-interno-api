@@ -13,12 +13,13 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
 
     Empresa findByCnpj(String cnpj);
 
-    @Query("UPDATE Empresa e SET e.cnpj = :cnpjNovo, e.nome = :nomeNovo WHERE e.cnpj = :cnpjAtual")
-    @Transactional
     @Modifying
-    void atualizarEmpresa(@Param("cnpjAtual") String cnpjAtual,
-                                 @Param("cnpjNovo") String cnpjNovo,
-                                 @Param("nomeNovo") String nomeNovo);
+    @Query("UPDATE Empresa e SET e.nome = :nomeNovo WHERE e.cnpj = :cnpjAtual")
+    void atualizarNome(@Param("cnpjAtual") String cnpjAtual, @Param("nomeNovo") String nomeNovo);
+
+    @Modifying
+    @Query("UPDATE Empresa e SET e.cnpj = :cnpjNovo WHERE e.cnpj = :cnpjAtual")
+    void atualizarCnpj(@Param("cnpjAtual") String cnpjAtual, @Param("cnpjNovo") String cnpjNovo);
 
     @Query("UPDATE Empresa e SET e.ativo = false WHERE e.cnpj = :cnpjAtual")
     @Transactional

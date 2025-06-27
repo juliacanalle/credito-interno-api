@@ -22,5 +22,7 @@ public record DadosEndereco(
         String uf,
 
         String complemento,
+
+        @NotBlank
         String numero) {
 }

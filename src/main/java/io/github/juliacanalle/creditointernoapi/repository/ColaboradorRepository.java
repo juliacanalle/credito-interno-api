@@ -36,5 +36,5 @@ UPDATE Colaborador c SET c.ativo = false WHERE c.cpf = :cpf
 
     Optional<Colaborador> findByCpfAndEmpresaCnpj(String cpf, String cnpj);
 
-
+    String cpf(String cpf);
 }
