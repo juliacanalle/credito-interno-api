@@ -92,5 +92,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(EmpresaAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmpresaAlreadyExistsException(EmpresaAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
 

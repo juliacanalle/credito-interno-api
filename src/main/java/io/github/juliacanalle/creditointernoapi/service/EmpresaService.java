@@ -4,6 +4,7 @@ import io.github.juliacanalle.creditointernoapi.dto.CepDto;
 import io.github.juliacanalle.creditointernoapi.dto.DadosAtualizaCadastroEmpresa;
 import io.github.juliacanalle.creditointernoapi.dto.EmpresaRequest;
 import io.github.juliacanalle.creditointernoapi.exceptions.AtLeastOneFieldPresentException;
+import io.github.juliacanalle.creditointernoapi.exceptions.EmpresaAlreadyExistsException;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Endereco;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
@@ -46,6 +47,10 @@ public class EmpresaService {
         endereco.setUf(cepDto.uf());
         endereco.setNumero(request.numero());
         endereco.setComplemento(request.complemento());
+
+        if(empresaRepository.existsByCnpj(request.cnpj())) {
+            throw new EmpresaAlreadyExistsException();
+        }
 
         Empresa empresa = new Empresa();
         empresa.setNome(request.nome());

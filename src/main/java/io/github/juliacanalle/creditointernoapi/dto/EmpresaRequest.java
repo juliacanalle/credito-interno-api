@@ -3,11 +3,12 @@ package io.github.juliacanalle.creditointernoapi.dto;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public record EmpresaRequest(
 
         @NotBlank
-        @Min(3)
+        @Size(min = 3)
         String nome,
 
         @NotBlank

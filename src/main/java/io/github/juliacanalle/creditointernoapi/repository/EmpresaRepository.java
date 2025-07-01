@@ -1,6 +1,8 @@
 package io.github.juliacanalle.creditointernoapi.repository;
 
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -25,5 +27,7 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     @Transactional
     @Modifying
     void inativarEmpresa(@Param("cnpjAtual") String cnpjAtual);
+
+    boolean existsByCnpj(@NotBlank @Pattern(regexp = "\\d{14}") String cnpj);
 }
 
