@@ -10,14 +10,19 @@ import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Endereco;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -28,17 +33,19 @@ public class ColaboradorService {
     private final EmpresaRepository empresaRepository;
     private final ColaboradorRepository colaboradorRepository;
     private final ContaService contaService;
+    private final Validator validator;
 
     public ColaboradorService(
             CepService cepService,
             EmpresaRepository empresaRepository,
             ColaboradorRepository colaboradorRepository,
-            ContaService contaService)
+            ContaService contaService, Validator validator)
     {
         this.cepService = cepService;
         this.empresaRepository = empresaRepository;
         this.colaboradorRepository = colaboradorRepository;
         this.contaService = contaService;
+        this.validator = validator;
     }
 
     @Transactional
@@ -72,6 +79,10 @@ public class ColaboradorService {
         }
         colaborador.setEmpresa(empresa);
 
+        Set<ConstraintViolation<Colaborador>> errosAoValidarColaborador = validator.validate(colaborador);
+        if (!CollectionUtils.isEmpty(errosAoValidarColaborador)) {
+            throw new ConstraintViolationException("Existem erros nos dados do colaborador.", errosAoValidarColaborador);
+        }
         return colaboradorRepository.save(colaborador);
     }
 
@@ -92,6 +103,11 @@ public class ColaboradorService {
         novoEndereco.setNumero(request.numero());
         novoEndereco.setComplemento(request.complemento());
 
+        Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
+        if (!CollectionUtils.isEmpty(errosAoValidarCep)) {
+            throw new ConstraintViolationException("Erro ao validar CEP.", errosAoValidarCep);
+        }
+
         colaborador.setEndereco(novoEndereco);
         colaboradorRepository.save(colaborador);
     }
@@ -101,6 +117,7 @@ public class ColaboradorService {
         if (colaborador == null) {
             throw new ColaboradorNotFoundException(cpf);
         }
+
         colaborador.setNome(novoNome);
         colaboradorRepository.save(colaborador);
     }
@@ -121,5 +138,4 @@ public class ColaboradorService {
             return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
                     .stream().map(ColaboradorResponse::new).toList();
         }
-
-    }
+}

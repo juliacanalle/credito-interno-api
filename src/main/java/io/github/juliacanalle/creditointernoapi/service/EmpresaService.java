@@ -7,27 +7,29 @@ import io.github.juliacanalle.creditointernoapi.exceptions.AtLeastOneFieldPresen
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Endereco;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
-import jakarta.validation.Valid;
+import jakarta.validation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Set;
 
 @Service
 public class EmpresaService {
 
     private final EmpresaRepository empresaRepository;
     private final CepService cepService;
-    private Validator validator =  Validation.buildDefaultValidatorFactory().getValidator();
+    private final Validator validator;
 
     @Autowired
-    public EmpresaService(EmpresaRepository empresaRepository, CepService cepService) {
+    public EmpresaService(EmpresaRepository empresaRepository, CepService cepService, Validator validator) {
         this.empresaRepository = empresaRepository;
         this.cepService = cepService;
+        this.validator = validator;
     }
 
     @Transactional
@@ -51,7 +53,16 @@ public class EmpresaService {
         empresa.setEndereco(endereco);
         empresa.setAtivo(true);
 
-        validator.validate(empresa);
+
+        Set<ConstraintViolation<Empresa>> errosAoValidarEmpresa = validator.validate(empresa);
+        if (!CollectionUtils.isEmpty(errosAoValidarEmpresa)) {
+            throw new ConstraintViolationException("Existem erros nos campos da empresa.", errosAoValidarEmpresa);
+        }
+
+        Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
+        if (!CollectionUtils.isEmpty(errosAoValidarCep)) {
+            throw new ConstraintViolationException("Erro ao validar CEP.", errosAoValidarCep);
+        }
 
         return empresaRepository.save(empresa);
     }
@@ -78,6 +89,14 @@ public class EmpresaService {
             throw new AtLeastOneFieldPresentException();
         }
         empresaRepository.save(empresa);
+    }
+
+    public void inativarEmpresa(String cnpjAtual) {
+        Empresa empresa = empresaRepository.findByCnpj(cnpjAtual);
+        if (empresa == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
+        }
+        empresaRepository.inativarEmpresa(cnpjAtual);
     }
 }
 

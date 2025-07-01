@@ -8,11 +8,16 @@ import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EnderecoRepository;
 import io.github.juliacanalle.creditointernoapi.repository.TransacaoRepository;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
+import java.util.Set;
 
 @Service
 public class ContaService {
@@ -25,6 +30,12 @@ public class ContaService {
 
     @Autowired
     private TransacaoRepository transacaoRepository;
+
+    private final Validator validator;
+
+    public ContaService(Validator validator) {
+        this.validator = validator;
+    }
 
     public void creditarConta(BigDecimal valor, String cnpj, String cpf, String mensagem) {
         var empresa = empresaRepository.findByCnpj(cnpj);
@@ -53,6 +64,11 @@ public class ContaService {
         Conta conta = colaborador.getConta();
         conta.creditar(valor);
         BigDecimal novoSaldo = conta.getSaldo();
+
+        Set<ConstraintViolation<Conta>> errosAoValidarConta = validator.validate(conta);
+        if (!CollectionUtils.isEmpty(errosAoValidarConta)) {
+            throw new ConstraintViolationException("Existem erros nos campos da conta.", errosAoValidarConta);
+        }
 
         Transacao t = new Transacao();
         t.setConta(conta);
@@ -90,6 +106,11 @@ public class ContaService {
         Conta conta = colaborador.getConta();
         conta.debitar(valor);
         BigDecimal novoSaldo = conta.getSaldo();
+
+        Set<ConstraintViolation<Conta>> errosAoValidarConta = validator.validate(conta);
+        if (!CollectionUtils.isEmpty(errosAoValidarConta)) {
+            throw new ConstraintViolationException("Existem erros nos campos da conta.", errosAoValidarConta);
+        }
 
         Transacao t = new Transacao();
         t.setConta(conta);

@@ -62,43 +62,36 @@ public class ColaboradorController {
         return ResponseEntity.ok(response);
     }
 
-    //ALTERADO E MELHORADO
     @GetMapping
     public List<ColaboradorResponse> listarPorEmpresa(@PathVariable String cnpj) {
         return colaboradorService.listarColaboradoresPorEmpresa(cnpj);
     }
 
-    //AQUI TA OK
     @GetMapping("/{cpf}")
     public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
         return colaboradorRepository.findByCpf(cpf);
     }
 
-    //ALTERADO E MELHORADO
     @DeleteMapping("/{cpf}")
     public void inativar(@PathVariable("cpf") String cpf) {
         colaboradorService.inativarColaborador(cpf);
     }
 
-    //ALTERADO E MELHORADO
     @PatchMapping("/{cpf}/nome")
     public void atualizarNome(@RequestBody @Valid AtualizaNomeRequest request, @PathVariable("cpf") String cpf, String novoNome) {
         colaboradorService.atualizarNomeColaborador(cpf, request.nome());
     }
 
-    //ALTERADO E MELHORADO
     @PatchMapping("/{cpf}/endereco")
     public void atualizarEndereco(@RequestBody @Valid AtualizaEnderecoRequest request, @PathVariable("cpf") String cpf) {
         colaboradorService.atualizarEnderecoColaborador(request, cpf);
     }
 
-    //AQUI TA OK
     @PostMapping("/{cpf}/creditar")
     public void creditarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
         contaService.creditarConta(request.valor(), cnpj, cpf, request.mensagem());
     }
 
-    //AQUI TA OK
     @Transactional
     @PostMapping("/{cpf}/debitar")
     public void debitarConta(@RequestBody @Valid OperacaoRequest request, @PathVariable("cpf") String cpf, @PathVariable("cnpj") String cnpj) {
@@ -115,36 +108,10 @@ public class ColaboradorController {
             @RequestParam(required = false) BigDecimal valorMax,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "dataHora,desc") String sort) {
-        if (dataInicio == null || dataFim == null) {
-            dataFim = LocalDate.now();
-            dataInicio = dataFim.minusDays(30);
-        }
-
-        if (ChronoUnit.DAYS.between(dataInicio, dataFim) > 30) {
-            throw new DataRangeExceedLimitException(dataInicio, dataFim);
-        }
-
-        if (valorMin != null && valorMax != null && valorMin.compareTo(valorMax) > 0) {
-            throw new MinValueGreaterThanMaxValueException(valorMin, valorMax);
-        }
-
-        String[] sortParts = sort.split(",");
-        String campo = sortParts[0];
-        String direcao = sortParts.length > 1 ? sortParts[1] : "asc";
-
-        if (!campo.equals("valor") && !campo.equals("criadoEm")) {
-            throw new InvalidSortFieldException(campo);
-        }
-
-        Sort.Direction direction = direcao.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, campo));
-
+            @RequestParam(defaultValue = "dataHora,desc") String sort
+    ) {
         return transacaoService.listarTransacoesPorCpf(
-                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, pageable
+                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, page, size, sort
         );
     }
 
@@ -160,25 +127,11 @@ public class ColaboradorController {
             HttpServletResponse response
     ) throws IOException {
 
-        if (dataInicio == null || dataFim == null) {
-            dataFim = LocalDate.now();
-            dataInicio = dataFim.minusDays(30);
-        }
-
-        String[] sortParts = sort.split(",");
-        String campo = sortParts[0];
-        String direcao = sortParts.length > 1 ? sortParts[1] : "asc";
-
-        Sort.Direction direction = direcao.equalsIgnoreCase("desc")
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-
-        Sort sortObj = Sort.by(direction, campo);
-
         List<Transacao> transacoes = transacaoService.listarTodasTransacoesPorCpf(
-                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, sortObj
+                cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, sort
         );
 
         csvExporterService.exportarTransacoes(transacoes, response, cpf);
     }
+
 }
