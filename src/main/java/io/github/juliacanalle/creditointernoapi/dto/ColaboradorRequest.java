@@ -9,12 +9,12 @@ public record ColaboradorRequest(
         @NotBlank
         String nome,
 
-        @NotBlank
-        @Pattern(regexp = "12")
+        @NotBlank(message = "CPF não pode estar em branco")
+        @Pattern(regexp = "\\d{11}", message = "CPF deve conter exatamente 11 dígitos numéricos.")
         String cpf,
 
         @NotBlank
-        @Pattern(regexp = "8")
+        @Pattern(regexp = "\\d{8}", message = "O CEP deve conter exatamente 8 dígitos numéricos.")
         String cep,
 
         @NotBlank

@@ -83,6 +83,12 @@ public class ColaboradorService {
         if (!CollectionUtils.isEmpty(errosAoValidarColaborador)) {
             throw new ConstraintViolationException("Existem erros nos dados do colaborador.", errosAoValidarColaborador);
         }
+
+        Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
+        if (!CollectionUtils.isEmpty(errosAoValidarCep)) {
+            throw new ConstraintViolationException("Erro ao validar CEP.", errosAoValidarCep);
+        }
+
         return colaboradorRepository.save(colaborador);
     }
 

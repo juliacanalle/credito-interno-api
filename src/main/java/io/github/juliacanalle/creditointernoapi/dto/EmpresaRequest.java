@@ -11,11 +11,11 @@ public record EmpresaRequest(
         String nome,
 
         @NotBlank
-        @Pattern(regexp = "14")
+        @Pattern(regexp = "\\d{14}")
         String cnpj,
 
         @NotBlank
-        @Pattern(regexp = "8")
+        @Pattern(regexp = "\\d{8}", message = "O CEP deve conter exatamente 8 dígitos numéricos.")
         String cep,
 
         @NotBlank
