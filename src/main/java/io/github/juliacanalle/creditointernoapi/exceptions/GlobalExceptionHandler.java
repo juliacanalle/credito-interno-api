@@ -99,5 +99,12 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(ex.getMessage()));
     }
+
+    @ExceptionHandler(CnpjAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleCnpjAlreadyExistsException(CnpjAlreadyExistsException ex) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ex.getMessage()));
+    }
 }
 

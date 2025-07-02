@@ -4,6 +4,7 @@ import io.github.juliacanalle.creditointernoapi.dto.CepDto;
 import io.github.juliacanalle.creditointernoapi.dto.DadosAtualizaCadastroEmpresa;
 import io.github.juliacanalle.creditointernoapi.dto.EmpresaRequest;
 import io.github.juliacanalle.creditointernoapi.exceptions.AtLeastOneFieldPresentException;
+import io.github.juliacanalle.creditointernoapi.exceptions.CnpjAlreadyExistsException;
 import io.github.juliacanalle.creditointernoapi.exceptions.EmpresaAlreadyExistsException;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Endereco;
@@ -34,7 +35,7 @@ public class EmpresaService {
     }
 
     @Transactional
-    public Empresa cadastrarEmpresaComBuscaCep (@Valid EmpresaRequest request) {
+    public Empresa cadastrarEmpresaComBuscaCep(@Valid EmpresaRequest request) {
         CepDto cepDto = cepService.consultaCep(request.cep());
 
         validator.validate(cepDto);
@@ -48,7 +49,7 @@ public class EmpresaService {
         endereco.setNumero(request.numero());
         endereco.setComplemento(request.complemento());
 
-        if(empresaRepository.existsByCnpj(request.cnpj())) {
+        if (empresaRepository.existsByCnpj(request.cnpj())) {
             throw new EmpresaAlreadyExistsException();
         }
 
@@ -75,28 +76,28 @@ public class EmpresaService {
     @Transactional
     public void atualizarEmpresa(String cnpjAtual, DadosAtualizaCadastroEmpresa dados) {
         var empresa = empresaRepository.findByCnpj(cnpjAtual);
-        if(empresa == null) {
+        if (empresa == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
         }
-        if (!cnpjAtual.equals(dados.cnpjNovo())) {
-            var outraEmpresa = empresaRepository.findByCnpj(dados.cnpjNovo());
-            if (outraEmpresa != null) {
-                throw new ResponseStatusException(HttpStatus.CONFLICT, "Já existe empresa cadastrada com esse CNPJ.");
-            }
-        }
-        if (dados.cnpjNovo() != null) {
-            empresaRepository.atualizarCnpj(cnpjAtual, dados.cnpjNovo());
-        }
-        if (dados.nomeNovo() != null) {
-            empresaRepository.atualizarNome(cnpjAtual, dados.nomeNovo());
-        }
+
         if (dados.cnpjNovo() == null && dados.nomeNovo() == null) {
             throw new AtLeastOneFieldPresentException();
         }
-        empresaRepository.save(empresa);
+
+        if (dados.cnpjNovo() != null && !dados.cnpjNovo().equals(cnpjAtual)) {
+            if (empresaRepository.findByCnpj(dados.cnpjNovo()) != null) {
+                throw new CnpjAlreadyExistsException();
+            }
+            empresaRepository.atualizarCnpj(cnpjAtual, dados.cnpjNovo());
+        }
+
+        if (dados.nomeNovo() != null) {
+            empresaRepository.atualizarNome(cnpjAtual, dados.nomeNovo());
+        }
     }
 
-    public void inativarEmpresa(String cnpjAtual) {
+
+    public void inativarEmpresa (String cnpjAtual){
         Empresa empresa = empresaRepository.findByCnpj(cnpjAtual);
         if (empresa == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Empresa não encontrada.");
@@ -104,4 +105,5 @@ public class EmpresaService {
         empresaRepository.inativarEmpresa(cnpjAtual);
     }
 }
+
 
