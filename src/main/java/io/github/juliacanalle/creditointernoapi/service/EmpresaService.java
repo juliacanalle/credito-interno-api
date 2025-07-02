@@ -38,7 +38,10 @@ public class EmpresaService {
     public Empresa cadastrarEmpresaComBuscaCep(@Valid EmpresaRequest request) {
         CepDto cepDto = cepService.consultaCep(request.cep());
 
-        validator.validate(cepDto);
+        Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
+        if (!CollectionUtils.isEmpty(errosAoValidarCep)) {
+            throw new ConstraintViolationException("Erro ao validar CEP.", errosAoValidarCep);
+        }
 
         Endereco endereco = new Endereco();
         endereco.setCep(request.cep());
@@ -59,15 +62,9 @@ public class EmpresaService {
         empresa.setEndereco(endereco);
         empresa.setAtivo(true);
 
-
         Set<ConstraintViolation<Empresa>> errosAoValidarEmpresa = validator.validate(empresa);
         if (!CollectionUtils.isEmpty(errosAoValidarEmpresa)) {
             throw new ConstraintViolationException("Existem erros nos campos da empresa.", errosAoValidarEmpresa);
-        }
-
-        Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
-        if (!CollectionUtils.isEmpty(errosAoValidarCep)) {
-            throw new ConstraintViolationException("Erro ao validar CEP.", errosAoValidarCep);
         }
 
         return empresaRepository.save(empresa);
