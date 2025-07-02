@@ -108,7 +108,7 @@ public class ColaboradorController {
             @RequestParam(required = false) BigDecimal valorMax,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
-            @RequestParam(defaultValue = "dataHora,desc") String sort
+            @RequestParam(defaultValue = "criadoEm,desc") String sort
     ) {
         return transacaoService.listarTransacoesPorCpf(
                 cnpj, cpf, dataInicio, dataFim, valorMin, valorMax, page, size, sort
