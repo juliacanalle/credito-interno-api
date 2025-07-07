@@ -21,7 +21,7 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> 
     List<Colaborador> findAllByEmpresaAndAtivoTrue(Empresa empresa);
 
     @Query("""
-UPDATE Colaborador c SET c.ativo = false WHERE c.cpf = :cpf
+    UPDATE Colaborador c SET c.ativo = false WHERE c.cpf = :cpf
 """)
     @Transactional
     @Modifying
@@ -37,4 +37,12 @@ UPDATE Colaborador c SET c.ativo = false WHERE c.cpf = :cpf
     Optional<Colaborador> findByCpfAndEmpresaCnpj(String cpf, String cnpj);
 
     String cpf(String cpf);
+
+    @Query("""
+    SELECT COUNT(c)
+    FROM Colaborador c
+    WHERE c.ativo = true AND c.empresa.cnpj = :cnpj
+""")
+    long contagemDeColaboradoresAtivosPorCnpj (@Param("cnpj") String cnpj);
+
 }

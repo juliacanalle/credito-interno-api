@@ -137,11 +137,12 @@ public class ColaboradorService {
     }
 
     public List<ColaboradorResponse> listarColaboradoresPorEmpresa(String cnpj) {
-            Empresa empresa = empresaRepository.findByCnpj(cnpj);
-            if(empresa == null) {
-                throw new EmpresaNotFoundException(cnpj);
-            }
-            return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
-                    .stream().map(ColaboradorResponse::new).toList();
+        Empresa empresa = empresaRepository.findByCnpj(cnpj);
+        if (empresa == null) {
+            throw new EmpresaNotFoundException(cnpj);
         }
+        return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
+                .stream().map(ColaboradorResponse::new).toList();
+
+    }
 }

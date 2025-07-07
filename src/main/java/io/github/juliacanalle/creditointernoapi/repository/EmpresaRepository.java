@@ -29,5 +29,10 @@ public interface EmpresaRepository extends JpaRepository<Empresa, Long> {
     void inativarEmpresa(@Param("cnpjAtual") String cnpjAtual);
 
     boolean existsByCnpj(@NotBlank @Pattern(regexp = "\\d{14}") String cnpj);
+
+    @Query("""
+SELECT COUNT(e) from Empresa e 
+""")
+    long contagemDeEmpresas();
 }
 
