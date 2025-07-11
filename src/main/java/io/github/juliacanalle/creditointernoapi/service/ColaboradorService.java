@@ -9,6 +9,7 @@ import io.github.juliacanalle.creditointernoapi.model.Conta;
 import io.github.juliacanalle.creditointernoapi.model.Empresa;
 import io.github.juliacanalle.creditointernoapi.model.Endereco;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
+import io.github.juliacanalle.creditointernoapi.repository.ContaRepository;
 import io.github.juliacanalle.creditointernoapi.repository.EmpresaRepository;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
@@ -34,18 +35,20 @@ public class ColaboradorService {
     private final ColaboradorRepository colaboradorRepository;
     private final ContaService contaService;
     private final Validator validator;
+    private final ContaRepository contaRepository;
 
     public ColaboradorService(
             CepService cepService,
             EmpresaRepository empresaRepository,
             ColaboradorRepository colaboradorRepository,
-            ContaService contaService, Validator validator)
+            ContaService contaService, Validator validator, ContaRepository contaRepository)
     {
         this.cepService = cepService;
         this.empresaRepository = empresaRepository;
         this.colaboradorRepository = colaboradorRepository;
         this.contaService = contaService;
         this.validator = validator;
+        this.contaRepository = contaRepository;
     }
 
     @Transactional
@@ -70,7 +73,7 @@ public class ColaboradorService {
         colaborador.setCpf(request.cpf());
         colaborador.setEndereco(endereco);
 
-        Conta  conta = new Conta();
+        Conta conta = new Conta();
         colaborador.setConta(conta);
 
         Empresa empresa = empresaRepository.findByCnpj(cnpj);

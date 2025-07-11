@@ -32,7 +32,7 @@ public class Colaborador {
     @JoinColumn(name = "endereco_id", nullable = false)
     Endereco endereco;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL, optional = false)
     @JoinColumn(name = "conta_id", nullable = false)
     Conta conta;
 

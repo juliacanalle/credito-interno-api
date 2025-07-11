@@ -17,6 +17,9 @@ public class Conta {
     private long id;
     private BigDecimal saldo = BigDecimal.ZERO;
 
+    @OneToOne(mappedBy = "conta")
+    private Colaborador colaborador;
+
     public Conta() {
     }
 
