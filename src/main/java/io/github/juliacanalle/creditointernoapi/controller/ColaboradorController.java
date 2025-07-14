@@ -68,8 +68,9 @@ public class ColaboradorController {
     }
 
     @GetMapping("/{cpf}")
-    public Colaborador buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
-        return colaboradorRepository.findByCpf(cpf);
+    public ColaboradorResponse buscarColaboradorPorCpf(@PathVariable("cpf") String cpf) {
+        Colaborador colaborador = colaboradorRepository.findByCpf(cpf);
+        return new ColaboradorResponse(colaborador);
     }
 
     @DeleteMapping("/{cpf}")
