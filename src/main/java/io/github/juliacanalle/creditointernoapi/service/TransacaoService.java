@@ -83,7 +83,6 @@ public class TransacaoService {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, campo));
 
-
         Page<Transacao> transacoes = transacaoRepository.findByContaAndCriadoEmBetweenAndValorBetween(
                 conta, inicio, fim, min, max, pageable);
 

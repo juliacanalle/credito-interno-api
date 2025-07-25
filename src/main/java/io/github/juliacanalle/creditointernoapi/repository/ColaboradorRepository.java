@@ -25,13 +25,15 @@ public interface ColaboradorRepository extends JpaRepository<Colaborador, Long> 
 """)
     @Transactional
     @Modifying
-    public void inativarColaborador(@Param("cpf") String cpf);
+    void inativarColaborador(@Param("cpf") String cpf);
 
-    @Query("""
+
+    /*@Query("""
     SELECT c.conta FROM Colaborador c 
     WHERE c.cpf = :cpf AND c.empresa.cnpj = :cnpj
 """)
-    Optional<Conta> findByCpfAndCnpj(@Param("cpf") String cpf, @Param("cnpj") String cnpj);
+    Optional<Conta> findByCpfAndCnpj(@Param("cpf") String cpf, @Param("cnpj") String cnpj);*/
+
 
     Optional<Colaborador> findByCpfAndEmpresaCnpj(String cpf, String cnpj);
 

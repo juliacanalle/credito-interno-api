@@ -34,4 +34,16 @@ public class Transacao {
     private BigDecimal valor;
 
     private LocalDateTime criadoEm = LocalDateTime.now();
+
+    public Transacao() {
+    }
+
+    public Transacao(Conta conta, BigDecimal saldo, String mensagem, TipoTransacao tipoTransacao, BigDecimal valor, LocalDateTime criadoEm) {
+        this.conta = conta;
+        this.saldo = saldo;
+        this.mensagem = mensagem;
+        this.tipoTransacao = tipoTransacao;
+        this.valor = valor;
+        this.criadoEm = criadoEm;
+    }
 }

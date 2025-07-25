@@ -1,5 +1,6 @@
 package io.github.juliacanalle.creditointernoapi.model;
 
+import io.github.juliacanalle.creditointernoapi.dto.ColaboradorRequest;
 import io.github.juliacanalle.creditointernoapi.dto.DadosEndereco;
 import io.github.juliacanalle.creditointernoapi.repository.ColaboradorRepository;
 import jakarta.persistence.*;
