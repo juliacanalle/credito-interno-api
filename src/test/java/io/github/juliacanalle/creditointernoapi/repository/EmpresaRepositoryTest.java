@@ -23,9 +23,9 @@ public class EmpresaRepositoryTest {
 
     private Endereco enderecoPadrao() {
         Endereco endereco = new Endereco();
-        endereco.setCep("07134500");
+        endereco.setCep("00000000");
         endereco.setLogradouro("Rua Teste");
-        endereco.setNumero("151");
+        endereco.setNumero("100");
         endereco.setBairro("Centro");
         endereco.setLocalidade("Guarulhos");
         endereco.setUf("SP");

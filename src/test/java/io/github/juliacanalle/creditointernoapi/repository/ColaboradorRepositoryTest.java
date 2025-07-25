@@ -61,7 +61,7 @@ class ColaboradorRepositoryTest {
         Conta conta = new Conta();
 
         String cpf = "00000000000";
-        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "07134500", "151", "Casa" );
+        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa" );
 
         Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
@@ -89,7 +89,7 @@ class ColaboradorRepositoryTest {
         Conta conta = new Conta();
 
         String cpf = "00000000000";
-        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "07134500", "151", "Casa" );
+        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa" );
         Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
@@ -117,10 +117,10 @@ class ColaboradorRepositoryTest {
         Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
-        ColaboradorRequest colaboradorAtivo1 = new ColaboradorRequest("Julia Teste", "54239214977", "07134500", "151", "Casa");
+        ColaboradorRequest colaboradorAtivo1 = new ColaboradorRequest("Julia Teste", "54239214977", "00000000", "100", "Casa");
         this.criarColaborador(colaboradorAtivo1, empresa, conta);
 
-        ColaboradorRequest colaboradorAtivo2 = new ColaboradorRequest("Julia Teste 2", "54229215976", "07134500", "151", "Casa");
+        ColaboradorRequest colaboradorAtivo2 = new ColaboradorRequest("Julia Teste 2", "54229215976", "00000000", "100", "Casa");
         this.criarColaborador(colaboradorAtivo2, empresa, conta);
 
         List<Colaborador> resultado = colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa);
@@ -142,7 +142,7 @@ class ColaboradorRepositoryTest {
 
         String cpf = "54239214977";
 
-        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "07134500", "151", "Casa");
+        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa");
         this.criarColaborador(request, empresa, conta);
 
         colaboradorRepository.inativarColaborador(request.cpf());
@@ -167,7 +167,7 @@ class ColaboradorRepositoryTest {
 
         String cpf = "54239214977";
 
-        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "07134500", "151", "Casa");
+        ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa");
         this.criarColaborador(request, empresa, conta);
 
         Optional<Colaborador> resultado = colaboradorRepository.findByCpfAndEmpresaCnpj(cpf, cnpj);
@@ -189,10 +189,10 @@ class ColaboradorRepositoryTest {
         Empresa empresa = new Empresa("Pluxee", cnpj, enderecoPadrao());
         entityManager.persist(empresa);
 
-        ColaboradorRequest colaborador1 = new ColaboradorRequest("Julia Teste 1", "54283461090", "07134500", "151", "Casa");
+        ColaboradorRequest colaborador1 = new ColaboradorRequest("Julia Teste 1", "54283461090", "00000000", "100", "Casa");
         this.criarColaborador(colaborador1, empresa, conta);
 
-        ColaboradorRequest colaborador2 = new ColaboradorRequest("Julia Teste 2", "16820593026", "07134500", "151", "Casa");
+        ColaboradorRequest colaborador2 = new ColaboradorRequest("Julia Teste 2", "16820593026", "00000000", "100", "Casa");
         this.criarColaborador(colaborador2, empresa, conta);
 
         long resultado = colaboradorRepository.contagemDeColaboradoresAtivosPorCnpj(cnpj);
