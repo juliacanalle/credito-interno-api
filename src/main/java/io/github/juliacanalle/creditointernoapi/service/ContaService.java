@@ -22,18 +22,18 @@ import java.util.Set;
 @Service
 public class ContaService {
 
-    @Autowired
-    private EmpresaRepository empresaRepository;
-
-    @Autowired
-    private ColaboradorRepository colaboradorRepository;
-
-    @Autowired
-    private TransacaoRepository transacaoRepository;
-
+    private final EmpresaRepository empresaRepository;
+    private final ColaboradorRepository colaboradorRepository;
+    private final TransacaoRepository transacaoRepository;
     private final Validator validator;
 
-    public ContaService(Validator validator) {
+    public ContaService(EmpresaRepository empresaRepository,
+                        ColaboradorRepository colaboradorRepository,
+                        TransacaoRepository transacaoRepository,
+                        Validator validator) {
+        this.empresaRepository = empresaRepository;
+        this.colaboradorRepository = colaboradorRepository;
+        this.transacaoRepository = transacaoRepository;
         this.validator = validator;
     }
 

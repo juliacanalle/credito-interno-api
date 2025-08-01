@@ -146,6 +146,5 @@ public class ColaboradorService {
         }
         return colaboradorRepository.findAllByEmpresaAndAtivoTrue(empresa)
                 .stream().map(ColaboradorResponse::new).toList();
-
     }
 }

@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Set;
@@ -14,27 +15,30 @@ import java.util.Set;
 @Service
 public class CepService {
 
-    public final Validator validator;
+    private final RestTemplate    restTemplate;
+    private final Validator       validator;
 
-    public CepService(Validator validator) {
-        this.validator = validator;
+    public CepService(RestTemplate restTemplate,
+                      Validator validator) {
+        this.restTemplate = restTemplate;
+        this.validator    = validator;
     }
 
-    public CepDto consultaCep (String cep) {
+    public CepDto consultaCep(String cep) {
+        String url = "https://viacep.com.br/ws/" + cep + "/json";
+
+        ResponseEntity<CepDto> resp;
         try {
-            String url = "https://viacep.com.br/ws/".concat(cep).concat("/json");
-            RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<CepDto> cepDtoResponseEntity =
-                    restTemplate.getForEntity(url,CepDto.class);
-
-            Set<ConstraintViolation<CepDto>> violacoes = validator.validate(cepDtoResponseEntity.getBody());
-            if (!violacoes.isEmpty()) {
-                throw new ConstraintViolationException("Erro ao validar o CEP retornado.", violacoes);
-            }
-
-            return cepDtoResponseEntity.getBody();
-        } catch (Exception e) {
+            resp = restTemplate.getForEntity(url, CepDto.class);
+        } catch (RestClientException e) {
             throw new CepNotFoundException();
         }
+
+        Set<ConstraintViolation<CepDto>> viol = validator.validate(resp.getBody());
+        if (!viol.isEmpty()) {
+            throw new ConstraintViolationException("Erro ao validar o CEP retornado.", viol);
+        }
+
+        return resp.getBody();
     }
 }

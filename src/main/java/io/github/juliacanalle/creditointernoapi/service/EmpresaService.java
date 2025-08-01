@@ -36,6 +36,11 @@ public class EmpresaService {
 
     @Transactional
     public Empresa cadastrarEmpresaComBuscaCep(@Valid EmpresaRequest request) {
+
+        if (empresaRepository.existsByCnpj(request.cnpj())) {
+            throw new EmpresaAlreadyExistsException();
+        }
+
         CepDto cepDto = cepService.consultaCep(request.cep());
 
         Set<ConstraintViolation<CepDto>> errosAoValidarCep = validator.validate(cepDto);
@@ -51,10 +56,6 @@ public class EmpresaService {
         endereco.setUf(cepDto.uf());
         endereco.setNumero(request.numero());
         endereco.setComplemento(request.complemento());
-
-        if (empresaRepository.existsByCnpj(request.cnpj())) {
-            throw new EmpresaAlreadyExistsException();
-        }
 
         Empresa empresa = new Empresa();
         empresa.setNome(request.nome());
@@ -92,7 +93,6 @@ public class EmpresaService {
             empresaRepository.atualizarNome(cnpjAtual, dados.nomeNovo());
         }
     }
-
 
     public void inativarEmpresa (String cnpjAtual){
         Empresa empresa = empresaRepository.findByCnpj(cnpjAtual);
