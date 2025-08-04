@@ -72,7 +72,7 @@ class ColaboradorServiceTest {
         ColaboradorRequest colaborador = new ColaboradorRequest("Julia Teste", "00000000000", "01001000", "100", "Casa");
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         Colaborador colab = new Colaborador();
@@ -193,7 +193,7 @@ class ColaboradorServiceTest {
         colab3.setCpf(cpfColab3);
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         colab1.setEmpresa(empresa);
@@ -216,7 +216,7 @@ class ColaboradorServiceTest {
         );
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         when(colaboradorRepository.existsByCpf(cpf)).thenReturn(true);
@@ -238,7 +238,7 @@ class ColaboradorServiceTest {
         );
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         when(empresaRepository.findByCnpj(empresa.getCnpj())).thenReturn(null);

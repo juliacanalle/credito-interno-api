@@ -55,7 +55,7 @@ public class EmpresaServiceTest {
                 7107L
         );
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setId(1);
@@ -80,18 +80,18 @@ public class EmpresaServiceTest {
 
         String cnpjAtual = "12345678000199";
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setCnpj(request.cnpj());
 
-        DadosAtualizaCadastroEmpresa dados = new DadosAtualizaCadastroEmpresa("Pluxee World", null);
+        DadosAtualizaCadastroEmpresa dados = new DadosAtualizaCadastroEmpresa("Empresa World", null);
 
         when(empresaRepository.findByCnpj(request.cnpj())).thenReturn(empresa);
 
         empresaService.atualizarEmpresa(request.cnpj(), dados);
 
-        verify(empresaRepository).atualizarNome(cnpjAtual, "Pluxee World");
+        verify(empresaRepository).atualizarNome(cnpjAtual, "Empresa World");
     }
 
     @Test
@@ -100,7 +100,7 @@ public class EmpresaServiceTest {
         String cnpjAtual = "12345678000199";
         String cnpjNovo = "98765432000100";
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setCnpj(request.cnpj());
@@ -121,12 +121,12 @@ public class EmpresaServiceTest {
         String cnpjAtual = "12345678000199";
         String cnpjNovo = "98765432000100";
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setCnpj(request.cnpj());
 
-        DadosAtualizaCadastroEmpresa dados = new DadosAtualizaCadastroEmpresa("Pluxee World", cnpjNovo);
+        DadosAtualizaCadastroEmpresa dados = new DadosAtualizaCadastroEmpresa("Empresa World", cnpjNovo);
 
         when(empresaRepository.findByCnpj(request.cnpj())).thenReturn(empresa);
         when(empresaRepository.findByCnpj(cnpjNovo)).thenReturn(null);
@@ -134,13 +134,13 @@ public class EmpresaServiceTest {
         empresaService.atualizarEmpresa(request.cnpj(), dados);
 
         verify(empresaRepository).atualizarCnpj(cnpjAtual, cnpjNovo);
-        verify(empresaRepository).atualizarNome(cnpjAtual, "Pluxee World");
+        verify(empresaRepository).atualizarNome(cnpjAtual, "Empresa World");
     }
 
     @Test
     void inativarEmpresa() {
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setCnpj(request.cnpj());
@@ -155,7 +155,7 @@ public class EmpresaServiceTest {
     @Test
     void deveLancarEmpresaAlreadyExistsExceptionQuandoEmpresaExistenteCadastro() {
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setId(1);
@@ -175,7 +175,7 @@ public class EmpresaServiceTest {
     @Test
     void deveLancarAtLeastOneFieldPresentExceptionQuandoNenhumCampoForPreenchidoAtualizarEmpresa() {
 
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setId(1);
@@ -192,7 +192,7 @@ public class EmpresaServiceTest {
 
     @Test
     void deveLancarCnpjAlreadyExistsExceptionQuandoEmpresaExistenteAtualizarEmpresa() {
-        EmpresaRequest request = new EmpresaRequest("Pluxee Brasil", "12345678000199", "01001000", "100", "Empresa");
+        EmpresaRequest request = new EmpresaRequest("Empresa XYZ", "12345678000199", "01001000", "100", "Empresa");
 
         Empresa empresa = new Empresa();
         empresa.setId(1);

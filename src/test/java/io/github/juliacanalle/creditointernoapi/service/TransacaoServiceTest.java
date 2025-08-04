@@ -64,7 +64,6 @@ public class TransacaoServiceTest {
         LocalDate dataInicioLocalDate = dataInicio.toLocalDate();
         LocalDate dataFimLocalDate = dataFim.toLocalDate();
 
-
         Empresa empresa = new Empresa();
         empresa.setCnpj(cnpj);
 

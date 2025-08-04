@@ -30,9 +30,9 @@ class ColaboradorRepositoryTest {
 
     private Endereco enderecoPadrao() {
         Endereco endereco = new Endereco();
-        endereco.setCep("07134500");
+        endereco.setCep("00000000");
         endereco.setLogradouro("Rua Teste");
-        endereco.setNumero("151");
+        endereco.setNumero("100");
         endereco.setBairro("Centro");
         endereco.setLocalidade("Guarulhos");
         endereco.setUf("SP");
@@ -63,7 +63,7 @@ class ColaboradorRepositoryTest {
         String cpf = "00000000000";
         ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa" );
 
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
         this.criarColaborador(request, empresa, conta);
@@ -90,7 +90,7 @@ class ColaboradorRepositoryTest {
 
         String cpf = "00000000000";
         ColaboradorRequest request = new ColaboradorRequest("Julia Teste", cpf, "00000000", "100", "Casa" );
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
         criarColaborador(request, empresa, conta);
@@ -114,7 +114,7 @@ class ColaboradorRepositoryTest {
 
         Conta conta = new Conta();
 
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
         ColaboradorRequest colaboradorAtivo1 = new ColaboradorRequest("Julia Teste", "54239214977", "00000000", "100", "Casa");
@@ -129,7 +129,7 @@ class ColaboradorRepositoryTest {
         assertEquals("Julia Teste", resultado.get(0).getNome());
         assertTrue(resultado.get(0).isAtivo());
         assertTrue(resultado.get(1).isAtivo());
-        assertEquals("12345678000199", empresa.getCnpj());
+        assertEquals("29876543000110", empresa.getCnpj());
     }
 
     @Test
@@ -137,7 +137,7 @@ class ColaboradorRepositoryTest {
 
         Conta conta = new Conta();
 
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
         String cpf = "54239214977";
@@ -162,7 +162,7 @@ class ColaboradorRepositoryTest {
 
         String cnpj = "12345678000199";
 
-        Empresa empresa = new Empresa("Pluxee", cnpj, enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", cnpj, enderecoPadrao());
         entityManager.persist(empresa);
 
         String cpf = "54239214977";
@@ -186,7 +186,7 @@ class ColaboradorRepositoryTest {
 
         String cnpj = "12345678000199";
 
-        Empresa empresa = new Empresa("Pluxee", cnpj, enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", cnpj, enderecoPadrao());
         entityManager.persist(empresa);
 
         ColaboradorRequest colaborador1 = new ColaboradorRequest("Julia Teste 1", "54283461090", "00000000", "100", "Casa");

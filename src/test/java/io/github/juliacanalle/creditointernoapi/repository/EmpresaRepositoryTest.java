@@ -35,31 +35,31 @@ public class EmpresaRepositoryTest {
 
     @Test
     void findByCnpjSuccess() {
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
         Empresa empresaEncontrada = empresaRepository.findByCnpj(empresa.getCnpj());
 
-        assertEquals("12345678000199", empresaEncontrada.getCnpj());
+        assertEquals("29876543000110", empresaEncontrada.getCnpj());
     }
 
     @Test
     void updateCompanyNameSuccess() {
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "29876543000110", enderecoPadrao());
         entityManager.persist(empresa);
 
-        empresaRepository.atualizarNome(empresa.getCnpj(), "Pluxee Brasil");
+        empresaRepository.atualizarNome(empresa.getCnpj(), "Empresa XY");
 
         entityManager.flush();
         entityManager.clear();
 
         Empresa empresaNomeAlterado = empresaRepository.findByCnpj(empresa.getCnpj());
-        assertEquals("Pluxee Brasil", empresaNomeAlterado.getNome());
+        assertEquals("Empresa XY", empresaNomeAlterado.getNome());
     }
 
     @Test
     void updateCompanyCnpjSuccess() {
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
         empresaRepository.atualizarCnpj(empresa.getCnpj(), "12345678000120");
@@ -73,7 +73,7 @@ public class EmpresaRepositoryTest {
 
     @Test
     void inactiveCompanySuccess() {
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
         empresaRepository.inativarEmpresa(empresa.getCnpj());
@@ -87,7 +87,7 @@ public class EmpresaRepositoryTest {
 
     @Test
     void existsByCnpjSuccess() {
-        Empresa empresa = new Empresa("Pluxee", "12345678000120", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "12345678000120", enderecoPadrao());
         entityManager.persist(empresa);
 
         empresaRepository.existsByCnpj(empresa.getCnpj());
@@ -98,13 +98,13 @@ public class EmpresaRepositoryTest {
 
     @Test
     void getCompanyCountSuccess() {
-        Empresa empresa1 = new Empresa("Pluxee", "12345678000120", enderecoPadrao());
+        Empresa empresa1 = new Empresa("Empresa X", "12345678000120", enderecoPadrao());
         entityManager.persist(empresa1);
 
-        Empresa empresa2 = new Empresa("Pluxee", "12345678000118", enderecoPadrao());
+        Empresa empresa2 = new Empresa("Empresa XY", "12345678000118", enderecoPadrao());
         entityManager.persist(empresa2);
 
-        Empresa empresa3 = new Empresa("Pluxee", "12345678000117", enderecoPadrao());
+        Empresa empresa3 = new Empresa("Empresa XYZ", "12345678000117", enderecoPadrao());
         entityManager.persist(empresa3);
 
         long contagemDeEmpresas = empresaRepository.contagemDeEmpresas();

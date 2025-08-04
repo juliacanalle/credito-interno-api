@@ -68,7 +68,7 @@ public class TransacaoRepositoryTest {
         Conta conta = new Conta();
         entityManager.persist(conta);
 
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
         ColaboradorRequest colaborador = new ColaboradorRequest("Julia Teste", "54239214977", "0713400", "100", "Casa");
@@ -101,7 +101,7 @@ public class TransacaoRepositoryTest {
         Conta conta = new Conta();
         entityManager.persist(conta);
 
-        Empresa empresa = new Empresa("Pluxee", "12345678000199", enderecoPadrao());
+        Empresa empresa = new Empresa("Empresa X", "12345678000199", enderecoPadrao());
         entityManager.persist(empresa);
 
         ColaboradorRequest colaborador = new ColaboradorRequest("Julia Teste", "54239214977", "0713400", "100", "Casa");

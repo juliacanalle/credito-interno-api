@@ -123,7 +123,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         when(empresaRepository.findByCnpj(empresa.getCnpj()))
@@ -141,7 +141,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(false);
 
@@ -160,7 +160,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
@@ -182,7 +182,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
@@ -208,7 +208,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
@@ -237,7 +237,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
 
         when(empresaRepository.findByCnpj(empresa.getCnpj()))
@@ -255,7 +255,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(false);
 
@@ -274,7 +274,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
@@ -296,7 +296,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
@@ -322,7 +322,7 @@ public class ContaServiceTest {
         String mensagem = "Teste";
 
         Empresa empresa = new Empresa();
-        empresa.setNome("Pluxee Brasil");
+        empresa.setNome("Empresa XYZ");
         empresa.setCnpj("12345678000199");
         empresa.setAtivo(true);
 
